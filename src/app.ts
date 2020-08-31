@@ -1,3 +1,7 @@
+import * as PIXI from "pixi.js";
+
+import { Slot } from "./Slot";
+
 const app = new PIXI.Application({
   antialias: true,
   resolution: devicePixelRatio,
@@ -28,6 +32,8 @@ const lootArmorSize = 72;
 const lootHotbarX = 1252;
 const lootHotbarY = 828;
 
+var button = PIXI.Texture.from(require("./assets/icon.png").default);
+
 // app.renderer.resize(window.innerWidth, window.innerHeight);
 app.renderer.resize(window.innerWidth, 1080);
 
@@ -40,12 +46,15 @@ graphics.beginFill(0xaaaaaa);
 
 // armor slots
 for (let i = 0; i < 7; i++) {
-  graphics.drawRect(
+  const s = new Slot(
     armorX + (armorSize + padding) * i,
     armorY + shift,
     armorSize,
-    armorSize
+    armorSize,
+    button
   );
+  app.stage.addChild(s.sprite);
+
 }
 
 // main inventory
