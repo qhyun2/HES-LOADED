@@ -102,7 +102,7 @@ export class Inventory {
           lootSize,
           this.bg
         );
-      this.stage.addChild(s.sprite);
+        this.stage.addChild(s.sprite);
       }
     }
 

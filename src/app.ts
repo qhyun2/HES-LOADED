@@ -9,7 +9,9 @@ const app = new PIXI.Application({
 app.renderer.resize(window.innerWidth, window.innerHeight);
 document.body.appendChild(app.view);
 
-const bg = new PIXI.Sprite(PIXI.Texture.from(require("./assets/bg.jpg").default));
+const bg = new PIXI.Sprite(
+  PIXI.Texture.from(require("./assets/bg.jpg").default)
+);
 bg.filters = [new PIXI.filters.BlurFilter()];
 bg.width = window.innerWidth;
 bg.height = window.innerHeight;
