@@ -1,5 +1,7 @@
-import { Slot } from "./Slot";
 import * as PIXI from "pixi.js";
+
+import { Slot } from "./Slot";
+import { Item } from "./Item";
 
 const shift = -200;
 const padding = 7;
@@ -28,11 +30,19 @@ const lootHotbarY = 828;
 
 export class Inventory {
   stage = new PIXI.Container();
-  bg = PIXI.Texture.from(require("./assets/icon.png").default);
-  armor: Slot[] = [];
-  inventory: Slot[] = [];
+  slotTexture = PIXI.Texture.from(require("./assets/icon.png").default);
+  slots: Slot[] = [];
+
+  dragging = false;
+  draggingItem: Item | null = null;
+  draggingId = 0;
+
+  // dragging
+  data: PIXI.InteractionData | null = null;
 
   constructor() {
+    let id = 0;
+
     // armor slots
     for (let i = 0; i < 7; i++) {
       const s = new Slot(
@@ -40,11 +50,10 @@ export class Inventory {
         armorY + shift,
         armorSize,
         armorSize,
-        this.bg
+        id++,
+        this
       );
-
-      this.stage.addChild(s.sprite);
-      this.armor.push(s);
+      this.slots.push(s);
     }
 
     // main inventory
@@ -55,10 +64,10 @@ export class Inventory {
           mainY + shift + (mainSize + padding) * y,
           mainSize,
           mainSize,
-          this.bg
+          id++,
+          this
         );
-        this.stage.addChild(s.sprite);
-        this.inventory.push(s);
+        this.slots.push(s);
       }
     }
 
@@ -69,10 +78,10 @@ export class Inventory {
         hotbarY + shift,
         mainSize,
         mainSize,
-        this.bg
+        id++,
+        this
       );
-      this.stage.addChild(s.sprite);
-      this.inventory.push(s);
+      this.slots.push(s);
     }
 
     // text boxes
@@ -87,9 +96,10 @@ export class Inventory {
         lootArmorY + shift,
         lootArmorSize,
         lootArmorSize,
-        this.bg
+        id++,
+        this
       );
-      this.stage.addChild(s.sprite);
+      this.slots.push(s);
     }
 
     // loot main inventory
@@ -100,9 +110,10 @@ export class Inventory {
           lootY + shift + (lootSize + padding) * y,
           lootSize,
           lootSize,
-          this.bg
+          id++,
+          this
         );
-        this.stage.addChild(s.sprite);
+        this.slots.push(s);
       }
     }
 
@@ -113,9 +124,30 @@ export class Inventory {
         lootHotbarY + shift,
         lootSize,
         lootSize,
-        this.bg
+        id++,
+        this
       );
-      this.stage.addChild(s.sprite);
+      this.slots.push(s);
+    }
+  }
+
+  onDragStart(event: PIXI.InteractionEvent, id: number) {
+    this.dragging = true;
+    this.draggingId = id;
+    this.data = event.data;
+    console.log("start", id);
+  }
+
+  onDragEnd() {
+    this.dragging = false;
+    this.data = null;
+    console.log("end", this.draggingId);
+  }
+
+  onDragMove() {
+    if (this.dragging) {
+      var newPosition = this.data!.getLocalPosition(this.stage);
+      this.slots[this.draggingId].item!.sprite.position.copyFrom(newPosition)
     }
   }
 }
