@@ -23,7 +23,7 @@ export class Slot {
     const temp = this.item;
     this.item = item;
 
-
+    // this.sprite.texture =
 
     return temp
   }
