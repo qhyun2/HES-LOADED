@@ -1,31 +1,30 @@
 import * as PIXI from "pixi.js";
 
 import { Slot } from "./Slot";
-import { Item } from "./Item";
 
 const shift = -200;
 
 const armorX = 72;
-const armorY = 832;
+const armorY = 832 + shift;
 const armorSize = 81;
 
 const mainX = 655;
-const mainY = 573;
+const mainY = 573 + shift;
 const mainSize = 96;
 
 const hotbarX = 656;
-const hotbarY = 963;
+const hotbarY = 963 + shift;
 
 const lootX = 1252;
-const lootY = 291;
+const lootY = 291 + shift;
 const lootSize = 93;
 
 const lootArmorX = 1258;
-const lootArmorY = 706;
+const lootArmorY = 706 + shift;
 const lootArmorSize = 78;
 
 const lootHotbarX = 1252;
-const lootHotbarY = 828;
+const lootHotbarY = 828 + shift;
 
 export class Inventory {
   stage: PIXI.Container;
@@ -55,7 +54,7 @@ export class Inventory {
     for (let i = 0; i < 7; i++) {
       const s = new Slot(
         armorX + armorSize * i,
-        armorY + shift,
+        armorY,
         armorSize,
         armorSize,
         id++,
@@ -69,7 +68,7 @@ export class Inventory {
       for (let x = 0; x < 6; x++) {
         const s = new Slot(
           mainX + mainSize * x,
-          mainY + shift + mainSize * y,
+          mainY + mainSize * y,
           mainSize,
           mainSize,
           id++,
@@ -83,7 +82,7 @@ export class Inventory {
     for (let i = 0; i < 6; i++) {
       const s = new Slot(
         hotbarX + mainSize * i,
-        hotbarY + shift,
+        hotbarY,
         mainSize,
         mainSize,
         id++,
@@ -95,6 +94,7 @@ export class Inventory {
     // text boxes
     let graphics = new PIXI.Graphics();
     graphics.beginFill(0xaaaaaa);
+    graphics.alpha = 0.6
     graphics.drawRect(1243, 250 + shift + 3, 570, 32);
     graphics.drawRect(1243, 666 + shift + 3, 570, 32);
     graphics.drawRect(1243, 787 + shift + 3, 570, 32);
@@ -105,7 +105,7 @@ export class Inventory {
     for (let i = 0; i < 7; i++) {
       const s = new Slot(
         lootArmorX + lootArmorSize * i,
-        lootArmorY + shift,
+        lootArmorY,
         lootArmorSize,
         lootArmorSize,
         id++,
@@ -119,7 +119,7 @@ export class Inventory {
       for (let x = 0; x < 6; x++) {
         const s = new Slot(
           lootX + lootSize * x,
-          lootY + shift + lootSize * y,
+          lootY + lootSize * y,
           lootSize,
           lootSize,
           id++,
@@ -133,7 +133,7 @@ export class Inventory {
     for (let i = 0; i < 6; i++) {
       const s = new Slot(
         lootHotbarX + lootSize * i,
-        lootHotbarY + shift,
+        lootHotbarY,
         lootSize,
         lootSize,
         id++,
@@ -141,6 +141,20 @@ export class Inventory {
       );
       this.slots.push(s);
     }
+
+  let t = new PIXI.Text("INVENTORY");
+  t.x = mainX + 5;
+  t.y = mainY + 5;
+  t.anchor.set(0, 1)
+  t.style = new PIXI.TextStyle({
+    fontFamily: "Roboto Condensed",
+    fontWeight: "700",
+    fill: 0xffffff,
+    fontSize: 30,
+    letterSpacing: 0.9
+  });
+  this.stage.addChild(t);
+
   }
 
   mouseDown(event: PIXI.InteractionEvent, id: number) {
