@@ -156,7 +156,9 @@ export class Inventory {
       }
       this.slots[this.dragFrom].item = undefined;
     }
+    console.log(this.slots[this.dragTo].item?.maxStack)
     this.dragFrom = -1;
+    this.dragTo = -1;
   }
 
   discard() {
@@ -166,8 +168,7 @@ export class Inventory {
 
   onDragMove() {
     if (this.dragFrom != -1 && this.data) {
-      var newPosition = this.data.getLocalPosition(this.stage);
-      this.slots[this.dragFrom].item!.sprite.position.copyFrom(newPosition);
+      this.data.getLocalPosition(this.stage, this.slots[this.dragFrom].item!.sprite.position);
     }
   }
 }
