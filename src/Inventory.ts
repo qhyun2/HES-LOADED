@@ -29,19 +29,29 @@ const lootHotbarX = 1252;
 const lootHotbarY = 828;
 
 export class Inventory {
-  stage = new PIXI.Container();
+  stage: PIXI.Container;
   slotTexture = PIXI.Texture.from(require("./assets/icon.png").default);
   slots: Slot[] = [];
 
   dragging = false;
-  draggingItem: Item | null = null;
-  draggingId = 0;
+  dragFrom = 0;
+  dragTo = -1;
 
   // dragging
   data: PIXI.InteractionData | null = null;
 
   constructor() {
     let id = 0;
+
+    this.stage = new PIXI.Container();
+
+    // back panel
+    const back = new PIXI.Sprite(PIXI.Texture.EMPTY);
+    back.width = window.innerWidth;
+    back.height = window.innerWidth;
+    back.interactive = true;
+    back.on("mouseup", () => this.discard());
+    this.stage.addChild(back);
 
     // armor slots
     for (let i = 0; i < 7; i++) {
@@ -131,23 +141,33 @@ export class Inventory {
     }
   }
 
-  onDragStart(event: PIXI.InteractionEvent, id: number) {
+  mouseDown(event: PIXI.InteractionEvent, id: number) {
     this.dragging = true;
-    this.draggingId = id;
+    this.dragFrom = id;
     this.data = event.data;
-    console.log("start", id);
   }
 
-  onDragEnd() {
+  mouseUp() {
+    console.log("mouseup", this.dragging, this.dragTo, this.dragFrom)
+    if (this.dragging) {
+        if (this.dragTo === -1) {
+            this.slots[this.dragFrom].set();
+        } else {
+            this.slots[this.dragTo].set(this.slots[this.dragFrom].item!);
+        }
+    }
     this.dragging = false;
-    this.data = null;
-    console.log("end", this.draggingId);
+  }
+
+  discard() {
+      this.dragging = false;
+      this.slots[this.dragFrom].set()
   }
 
   onDragMove() {
-    if (this.dragging) {
-      var newPosition = this.data!.getLocalPosition(this.stage);
-      this.slots[this.draggingId].item!.sprite.position.copyFrom(newPosition)
+    if (this.dragging && this.data) {
+      var newPosition = this.data.getLocalPosition(this.stage);
+      this.slots[this.dragFrom].item!.sprite.position.copyFrom(newPosition);
     }
   }
 }

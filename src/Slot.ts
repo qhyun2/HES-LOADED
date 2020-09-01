@@ -7,8 +7,7 @@ const padding = 6;
 export class Slot {
   id: number;
   sprite: PIXI.Sprite;
-  item: Item | null = null;
-  dragStart = false;
+  item?: Item;
 
   constructor(
     x: number,
@@ -31,22 +30,21 @@ export class Slot {
     this.sprite.buttonMode = true;
     this.sprite
       .on("mousedown", (e) => {
-        this.dragStart = true;
-        inventory.onDragStart(e, this.id);
+        if (this.item) inventory.mouseDown(e, this.id);
       })
-      .on("mouseup", (e) => {
-        // if drag start has been set it means this is the source slot
-        // ignore this event as the desitnation slot also emmits and event
-        inventory.onDragEnd;
-      })
-      .on("mouseupoutside", inventory.onDragEnd.bind(inventory))
-      .on("mousemove", inventory.onDragMove.bind(inventory));
+      .on("mouseup", () => inventory.mouseUp())
+      .on("mousemove", () => inventory.onDragMove())
+      .on("mouseover", () => (inventory.dragTo = this.id));
 
     inventory.stage.addChild(this.sprite);
   }
 
-  move(item: Item | null): Item | null {
-    const temp = this.item;
+  set(item?: Item) {
+    if (!item) {
+      this.item!.destory();
+      return;
+    }
+
     this.item = item;
 
     if (this.item) {
@@ -55,7 +53,5 @@ export class Slot {
       this.item.sprite.width = this.sprite.width - padding * 2;
       this.item.sprite.height = this.sprite.height - padding * 2;
     }
-
-    return temp;
   }
 }
