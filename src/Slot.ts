@@ -27,7 +27,6 @@ export class Slot {
 
     // mouse events
     this.sprite.interactive = true;
-    this.sprite.buttonMode = true;
     this.sprite
       .on("mousedown", (e) => {
         if (this.item) inventory.mouseDown(e, this.id);
