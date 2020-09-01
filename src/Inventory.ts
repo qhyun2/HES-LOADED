@@ -93,9 +93,13 @@ export class Inventory {
     }
 
     // text boxes
-    // graphics.drawRect(1243, 250 + shift, 570, 32);
-    // graphics.drawRect(1243, 666 + shift, 570, 32);
-    // graphics.drawRect(1243, 787 + shift, 570, 32);
+    let graphics = new PIXI.Graphics();
+    graphics.beginFill(0xaaaaaa);
+    graphics.drawRect(1243, 250 + shift + 3, 570, 32);
+    graphics.drawRect(1243, 666 + shift + 3, 570, 32);
+    graphics.drawRect(1243, 787 + shift + 3, 570, 32);
+    graphics.endFill();
+    this.stage.addChild(graphics);
 
     // loot armor slots
     for (let i = 0; i < 7; i++) {
@@ -141,23 +145,23 @@ export class Inventory {
 
   mouseDown(event: PIXI.InteractionEvent, id: number) {
     this.dragFrom = id;
+    this.dragTo = id;
     this.data = event.data;
   }
 
   mouseUp() {
     if (this.dragFrom != -1) {
-        if (this.dragTo === -1) {
-            this.slots[this.dragFrom].set();
-        } else {
-            this.slots[this.dragTo].set(this.slots[this.dragFrom].item!);
-        }
+      if (this.dragTo != -1) {
+        this.slots[this.dragTo].set(this.slots[this.dragFrom].item!);
+      }
+      this.slots[this.dragFrom].item = undefined;
     }
     this.dragFrom = -1;
   }
 
   discard() {
-      this.slots[this.dragFrom].set()
-      this.dragFrom = -1;
+    this.slots[this.dragFrom].set();
+    this.dragFrom = -1;
   }
 
   onDragMove() {

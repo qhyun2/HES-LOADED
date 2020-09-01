@@ -30,9 +30,8 @@ inv.slots[28].set(new Item(app.stage, "knife.bone", 1));
 inv.slots[29].set(new Item(app.stage, "torch", 1));
 inv.slots[32].set(new Item(app.stage, "rifle.ak", 1));
 
-
 function animate() {
-    requestAnimationFrame(animate);
-    // render the stage
-    app.renderer.render(app.stage);
+  requestAnimationFrame(animate);
+  // render the stage
+  app.renderer.render(app.stage);
 }
