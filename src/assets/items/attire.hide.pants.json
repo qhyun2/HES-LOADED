@@ -19,5 +19,6 @@
     "isWearable": true,
     "isHoldable": false,
     "isUsable": false,
-    "HasSkins": false
+    "HasSkins": false,
+    "value": 0
 }
