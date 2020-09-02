@@ -1,0 +1,23 @@
+{
+    "itemid": 1983621560,
+    "shortname": "floor.triangle.grill",
+    "Name": "Floor triangle grill",
+    "Description": "A floor grill must be placed in floor frames. Perfect for placing above a large furnace.",
+    "Category": "Construction",
+    "maxDraggable": 0,
+    "ItemType": "Generic",
+    "AmountType": "Count",
+    "stackable": 1,
+    "quickDespawn": false,
+    "rarity": "Uncommon",
+    "condition": {
+        "enabled": true,
+        "max": 100.0,
+        "repairable": false
+    },
+    "Parent": 0,
+    "isWearable": false,
+    "isHoldable": true,
+    "isUsable": true,
+    "HasSkins": false
+}
