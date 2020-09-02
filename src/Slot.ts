@@ -24,6 +24,7 @@ export class Slot {
     this.sprite.position.y = y;
     this.sprite.width = width;
     this.sprite.height = height;
+    this.sprite.alpha = 0.5;
 
     // mouse events
     this.sprite.interactive = true;
