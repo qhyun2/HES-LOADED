@@ -15,8 +15,16 @@ export class Inventory {
   textHeadingStyle = new PIXI.TextStyle({
     fontFamily: "Roboto Condensed",
     fontWeight: "700",
-    fill: 0xe4ddd7,
+    fill: 0xeae4dd,
     fontSize: 30,
+    letterSpacing: 0.9,
+  });
+
+  textBarStyle = new PIXI.TextStyle({
+    fontFamily: "Roboto Condensed",
+    fontWeight: "700",
+    fill: 0xeae4dd,
+    fontSize: 20,
     letterSpacing: 0.9,
   });
 
@@ -26,7 +34,6 @@ export class Inventory {
   data: PIXI.InteractionData | null = null;
 
   constructor() {
-
     this.stage = new PIXI.Container();
 
     // back panel
@@ -51,6 +58,34 @@ export class Inventory {
     t.y = 378;
     t.anchor.set(0, 1);
     t.style = this.textHeadingStyle;
+    this.stage.addChild(t);
+
+    t = new PIXI.Text("LOOT");
+    t.x = 1243;
+    t.y = 52;
+    t.anchor.set(0, 1);
+    t.style = this.textHeadingStyle;
+    this.stage.addChild(t);
+
+    t = new PIXI.Text("PlayerName");
+    t.x = 1243 + 15;
+    t.y = 52 + 5;
+    t.anchor.set(0, 0);
+    t.style = this.textBarStyle;
+    this.stage.addChild(t);
+
+    t = new PIXI.Text("Clothing");
+    t.x = 1243 + 15;
+    t.y = 469 + 5;
+    t.anchor.set(0, 0);
+    t.style = this.textBarStyle;
+    this.stage.addChild(t);
+
+    t = new PIXI.Text("Belt");
+    t.x = 1243 + 15;
+    t.y = 590 + 5;
+    t.anchor.set(0, 0);
+    t.style = this.textBarStyle;
     this.stage.addChild(t);
   }
 
