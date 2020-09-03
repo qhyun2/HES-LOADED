@@ -15,7 +15,7 @@ export class Inventory {
   textHeadingStyle = new PIXI.TextStyle({
     fontFamily: "Roboto Condensed",
     fontWeight: "700",
-    fill: 0xeae4dd,
+    fill: 0xdddddd,
     fontSize: 30,
     letterSpacing: 0.9,
   });
@@ -23,7 +23,7 @@ export class Inventory {
   textBarStyle = new PIXI.TextStyle({
     fontFamily: "Roboto Condensed",
     fontWeight: "700",
-    fill: 0xeae4dd,
+    fill: 0xdddddd,
     fontSize: 20,
     letterSpacing: 0.9,
   });

@@ -1,7 +1,7 @@
 import "./style.css";
 
 import * as PIXI from "pixi.js";
-import * as WebFont from "webfontloader"
+import * as WebFont from "webfontloader";
 
 import { Inventory } from "./Inventory";
 import { Item } from "./Item";
@@ -27,14 +27,18 @@ function init() {
   const inv = new Inventory();
   app.stage.addChild(inv.stage);
 
-  inv.slots[10].set(new Item(app.stage, "explosive.timed", 1));
-  inv.slots[13].set(new Item(app.stage, "bandage", 1));
-  inv.slots[14].set(new Item(app.stage, "ammo.rifle", 1));
-  inv.slots[26].set(new Item(app.stage, "syringe.medical", 1));
-  inv.slots[27].set(new Item(app.stage, "bandage", 1));
+  inv.slots[10].set(new Item(app.stage, "explosive.timed", 5));
+  inv.slots[11].set(new Item(app.stage, "wood", 100));
+  inv.slots[12].set(new Item(app.stage, "stones", 1000));
+  inv.slots[13].set(new Item(app.stage, "bandage", 3));
+  inv.slots[14].set(new Item(app.stage, "ammo.rifle", 42));
+  inv.slots[26].set(new Item(app.stage, "syringe.medical", 2));
+  inv.slots[27].set(new Item(app.stage, "bandage", 2));
   inv.slots[28].set(new Item(app.stage, "knife.bone", 1));
   inv.slots[29].set(new Item(app.stage, "torch", 1));
   inv.slots[32].set(new Item(app.stage, "rifle.ak", 1));
+  inv.slots[33].set(new Item(app.stage, "rifle.semiauto", 1));
+  inv.slots[70].set(new Item(app.stage, "crossbow", 1));
 
   animate();
 }
@@ -45,13 +49,12 @@ function animate() {
   app.renderer.render(app.stage);
 }
 
-
 WebFont.load({
   google: {
     families: ["Roboto Condensed:700"],
   },
   active: (e) => {
     console.log("font loaded!");
-    init()
+    init();
   },
 });
