@@ -12,12 +12,15 @@ const textCountStyle = new PIXI.TextStyle({
 
 export class Item {
   name: string;
-  amount = 0;
-  amountString: PIXI.Text;
+  _count = 0;
+  countString: PIXI.Text;
   stage: PIXI.Container;
   sprite: PIXI.Sprite;
   wearable = false;
   maxStack = 0;
+  value = 0;
+  conditionEnabled = false;
+  condition = 100;
 
   constructor(stage: PIXI.Container, name: string, amount: number) {
     this.name = name;
@@ -41,12 +44,12 @@ export class Item {
     this.stage.addChild(this.sprite);
 
     // item count display
-    this.amountString = new PIXI.Text("");
-    this.amountString.anchor.set(1);
-    this.amountString.x = baseSize - 8;
-    this.amountString.y = baseSize - 5;
-    this.amountString.style = textCountStyle;
-    this.stage.addChild(this.amountString);
+    this.countString = new PIXI.Text("");
+    this.countString.anchor.set(1);
+    this.countString.x = baseSize - 8;
+    this.countString.y = baseSize - 5;
+    this.countString.style = textCountStyle;
+    this.stage.addChild(this.countString);
     this.count = amount;
 
     // json data
@@ -57,6 +60,15 @@ export class Item {
       .then((data) => {
         this.wearable = data.isWearable;
         this.maxStack = data.stackable;
+        this.conditionEnabled = data.condition.enabled;
+        this.value = data.value;
+        if (this.conditionEnabled) {
+          const g = new PIXI.Graphics();
+          g.beginFill(0xadcb75);
+          g.drawRect(3, 3, 6, 84);
+          g.endFill();
+          this.stage.addChild(g);
+        }
       })
       .catch((err) => {
         console.log(this.name);
@@ -66,15 +78,15 @@ export class Item {
 
   // getters and setters for item count
   public set count(v: number) {
-    this.amount = v;
+    this._count = v;
 
     if (v > 1) {
-      this.amountString.text = `x${this.amount.toLocaleString("en")}`;
+      this.countString.text = `x${this._count.toLocaleString("en")}`;
     }
   }
 
   public get count(): number {
-    return this.amount;
+    return this._count;
   }
 
   destory() {

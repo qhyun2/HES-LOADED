@@ -98,9 +98,9 @@ export class Inventory {
   mouseUp() {
     if (this.dragFrom != -1) {
       if (this.dragTo != -1) {
-        this.slots[this.dragTo].set(this.slots[this.dragFrom].item!);
+        this.slots[this.dragTo].item = this.slots[this.dragFrom].item!;
       }
-      this.slots[this.dragFrom].item = undefined;
+      this.slots[this.dragFrom].item = null;
     }
     console.log(this.slots[this.dragTo].item?.maxStack);
     this.dragFrom = -1;
@@ -108,7 +108,7 @@ export class Inventory {
   }
 
   discard() {
-    this.slots[this.dragFrom].set();
+    this.slots[this.dragFrom].item = null;
     this.dragFrom = -1;
   }
 

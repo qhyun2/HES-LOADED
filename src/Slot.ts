@@ -5,7 +5,7 @@ import { Inventory } from "./Inventory";
 export class Slot {
   id: number;
   sprite: PIXI.Sprite;
-  item?: Item;
+  _item: Item | null = null;
 
   constructor(
     x: number,
@@ -36,19 +36,17 @@ export class Slot {
     inventory.stage.addChild(this.sprite);
   }
 
-  set(item?: Item) {
-    if (!item) {
-      this.item!.destory();
-      return;
-    }
+  public set item(v: Item | null) {
+    this._item = v;
 
-    this.item = item;
-
-    if (this.item) {
-      this.item.stage.position.x = this.sprite.x;
-      this.item.stage.position.y = this.sprite.y;
-      this.item.stage.width = this.sprite.width;
-      this.item.stage.height = this.sprite.height;
+    if (this._item) {
+      this._item.stage.position.x = this.sprite.x;
+      this._item.stage.position.y = this.sprite.y;
+      this._item.stage.width = this.sprite.width;
+      this._item.stage.height = this.sprite.height;
     }
+  }
+  public get item(): Item | null {
+    return this._item
   }
 }

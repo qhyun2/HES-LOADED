@@ -8,39 +8,54 @@ import { Item } from "./Item";
 
 let app: PIXI.Application;
 
+WebFont.load({
+  google: {
+    families: ["Roboto Condensed:700"],
+  },
+  // start app once fonts are loaded
+  active: (e) => {
+    init();
+  },
+});
+
 function init() {
   app = new PIXI.Application({
     antialias: true,
-    resolution: devicePixelRatio,
+    resolution: devicePixelRatio || 1,
   });
-  app.renderer.resize(window.innerWidth, window.innerHeight);
+  window.addEventListener("resize", resize);
+  resize();
   document.body.appendChild(app.view);
 
   const bg = new PIXI.Sprite(
     PIXI.Texture.from(require("./assets/bg.jpg").default)
   );
   bg.filters = [new PIXI.filters.BlurFilter(5)];
-  bg.width = window.innerWidth;
-  bg.height = window.innerHeight;
+  bg.width = 1920;
+  bg.height = 1080;
   app.stage.addChild(bg);
 
   const inv = new Inventory();
   app.stage.addChild(inv.stage);
 
-  inv.slots[10].set(new Item(app.stage, "explosive.timed", 5));
-  inv.slots[11].set(new Item(app.stage, "wood", 100));
-  inv.slots[12].set(new Item(app.stage, "stones", 1000));
-  inv.slots[13].set(new Item(app.stage, "bandage", 3));
-  inv.slots[14].set(new Item(app.stage, "ammo.rifle", 42));
-  inv.slots[26].set(new Item(app.stage, "syringe.medical", 2));
-  inv.slots[27].set(new Item(app.stage, "bandage", 2));
-  inv.slots[28].set(new Item(app.stage, "knife.bone", 1));
-  inv.slots[29].set(new Item(app.stage, "torch", 1));
-  inv.slots[32].set(new Item(app.stage, "rifle.ak", 1));
-  inv.slots[33].set(new Item(app.stage, "rifle.semiauto", 1));
-  inv.slots[70].set(new Item(app.stage, "crossbow", 1));
+  inv.slots[10].item = new Item(app.stage, "explosive.timed", 5);
+  inv.slots[11].item = new Item(app.stage, "wood", 100);
+  inv.slots[12].item = new Item(app.stage, "stones", 1000);
+  inv.slots[13].item = new Item(app.stage, "bandage", 3);
+  inv.slots[14].item = new Item(app.stage, "ammo.rifle", 42);
+  inv.slots[26].item = new Item(app.stage, "syringe.medical", 2);
+  inv.slots[27].item = new Item(app.stage, "bandage", 2);
+  inv.slots[28].item = new Item(app.stage, "knife.bone", 1);
+  inv.slots[29].item = new Item(app.stage, "torch", 1);
+  inv.slots[32].item = new Item(app.stage, "rifle.ak", 1);
+  inv.slots[33].item = new Item(app.stage, "rifle.semiauto", 1);
+  inv.slots[70].item = new Item(app.stage, "crossbow", 1);
 
   animate();
+}
+
+function resize() {
+  app.renderer.resize(window.innerWidth, window.innerHeight);
 }
 
 function animate() {
@@ -48,13 +63,3 @@ function animate() {
   // render the stage
   app.renderer.render(app.stage);
 }
-
-WebFont.load({
-  google: {
-    families: ["Roboto Condensed:700"],
-  },
-  active: (e) => {
-    console.log("font loaded!");
-    init();
-  },
-});
