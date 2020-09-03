@@ -116,7 +116,7 @@ export class Inventory {
     if (this.dragFrom != -1 && this.data) {
       this.data.getLocalPosition(
         this.stage,
-        this.slots[this.dragFrom].item!.sprite.position
+        this.slots[this.dragFrom].item!.stage.position
       );
     }
   }

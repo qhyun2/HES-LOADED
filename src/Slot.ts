@@ -2,8 +2,6 @@ import * as PIXI from "pixi.js";
 import { Item } from "./Item";
 import { Inventory } from "./Inventory";
 
-const padding = 6;
-
 export class Slot {
   id: number;
   sprite: PIXI.Sprite;
@@ -12,8 +10,7 @@ export class Slot {
   constructor(
     x: number,
     y: number,
-    width: number,
-    height: number,
+    size: number,
     id: number,
     inventory: Inventory
   ) {
@@ -22,8 +19,8 @@ export class Slot {
     this.sprite = new PIXI.Sprite(inventory.slotTexture);
     this.sprite.position.x = x;
     this.sprite.position.y = y;
-    this.sprite.width = width;
-    this.sprite.height = height;
+    this.sprite.width = size;
+    this.sprite.height = size;
     this.sprite.alpha = 0.5;
 
     // mouse events
@@ -48,10 +45,10 @@ export class Slot {
     this.item = item;
 
     if (this.item) {
-      this.item.sprite.position.x = this.sprite.x + padding;
-      this.item.sprite.position.y = this.sprite.y + padding;
-      this.item.sprite.width = this.sprite.width - padding * 2;
-      this.item.sprite.height = this.sprite.height - padding * 2;
+      this.item.stage.position.x = this.sprite.x;
+      this.item.stage.position.y = this.sprite.y;
+      this.item.stage.width = this.sprite.width;
+      this.item.stage.height = this.sprite.height;
     }
   }
 }

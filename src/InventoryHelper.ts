@@ -35,7 +35,6 @@ export function generateInventory(stage: PIXI.Container, inv: Inventory) {
         armorX + armorSize * i,
         armorY,
         armorSize,
-        armorSize,
         id++,
         inv
       );
@@ -48,7 +47,6 @@ export function generateInventory(stage: PIXI.Container, inv: Inventory) {
         const s = new Slot(
           mainX + mainSize * x,
           mainY + mainSize * y,
-          mainSize,
           mainSize,
           id++,
           inv
@@ -63,7 +61,6 @@ export function generateInventory(stage: PIXI.Container, inv: Inventory) {
         hotbarX + mainSize * i,
         hotbarY,
         mainSize,
-        mainSize,
         id++,
         inv
       );
@@ -75,7 +72,6 @@ export function generateInventory(stage: PIXI.Container, inv: Inventory) {
       const s = new Slot(
         lootArmorX + lootArmorSize * i,
         lootArmorY,
-        lootArmorSize,
         lootArmorSize,
         id++,
         inv
@@ -90,7 +86,6 @@ export function generateInventory(stage: PIXI.Container, inv: Inventory) {
           lootX + lootSize * x,
           lootY + lootSize * y,
           lootSize,
-          lootSize,
           id++,
           inv
         );
@@ -103,7 +98,6 @@ export function generateInventory(stage: PIXI.Container, inv: Inventory) {
       const s = new Slot(
         lootHotbarX + lootSize * i,
         lootHotbarY,
-        lootSize,
         lootSize,
         id++,
         inv
