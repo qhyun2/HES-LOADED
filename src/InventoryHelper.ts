@@ -26,6 +26,22 @@ const lootArmorSize = 78;
 const lootHotbarX = 1252;
 const lootHotbarY = 828 + shift;
 
+const textHeadingStyle = new PIXI.TextStyle({
+  fontFamily: "Roboto Condensed",
+  fontWeight: "700",
+  fill: 0xdddddd,
+  fontSize: 30,
+  letterSpacing: 0.9,
+});
+
+const textBarStyle = new PIXI.TextStyle({
+  fontFamily: "Roboto Condensed",
+  fontWeight: "700",
+  fill: 0xdddddd,
+  fontSize: 20,
+  letterSpacing: 0.9,
+});
+
 export function generateInventory(stage: PIXI.Container, inv: Inventory) {
   let id = 0;
 
@@ -92,6 +108,43 @@ export function generateInventory(stage: PIXI.Container, inv: Inventory) {
     );
     inv.slots.push(s);
   }
+
+ // labels
+    let t = new PIXI.Text("INVENTORY");
+    t.x = 660;
+    t.y = 378;
+    t.anchor.set(0, 1);
+    t.style = textHeadingStyle;
+    stage.addChild(t);
+
+    t = new PIXI.Text("LOOT");
+    t.x = 1243;
+    t.y = 52;
+    t.anchor.set(0, 1);
+    t.style = textHeadingStyle;
+    stage.addChild(t);
+
+    t = new PIXI.Text("PlayerName");
+    t.x = 1243 + 15;
+    t.y = 52 + 5;
+    t.anchor.set(0, 0);
+    t.style = textBarStyle;
+    stage.addChild(t);
+
+    t = new PIXI.Text("Clothing");
+    t.x = 1243 + 15;
+    t.y = 469 + 5;
+    t.anchor.set(0, 0);
+    t.style = textBarStyle;
+    stage.addChild(t);
+
+    t = new PIXI.Text("Belt");
+    t.x = 1243 + 15;
+    t.y = 590 + 5;
+    t.anchor.set(0, 0);
+    t.style = textBarStyle;
+    stage.addChild(t);
+
 }
 
 export function createBar(y: number, texture: PIXI.Texture) {
