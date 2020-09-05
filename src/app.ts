@@ -3,6 +3,10 @@ import "./style.css";
 import * as PIXI from "pixi.js";
 import * as WebFont from "webfontloader";
 
+// NOTE: workaround being used for module
+// in tween package.json, change module: dist/tween.esm.js => dist/tween.amd.js
+import * as TWEEN from "@tweenjs/tween.js"
+
 import { Inventory } from "./Inventory";
 import { Item } from "./Item";
 
@@ -17,6 +21,9 @@ WebFont.load({
     init();
   },
 });
+
+
+
 
 function init() {
   app = new PIXI.Application({
@@ -51,15 +58,18 @@ function init() {
   inv.slots[33].item = new Item(app.stage, "rifle.semiauto", 1);
   inv.slots[70].item = new Item(app.stage, "crossbow", 1);
 
-  animate();
+  requestAnimationFrame(animate);
 }
 
 function resize() {
   app.renderer.resize(window.innerWidth, window.innerHeight);
 }
 
-function animate() {
-  requestAnimationFrame(animate);
+function animate(time: number) {
+  TWEEN.update(time);
+
   // render the stage
   app.renderer.render(app.stage);
+
+  requestAnimationFrame(animate);
 }

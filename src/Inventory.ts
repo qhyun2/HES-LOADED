@@ -19,6 +19,8 @@ export class Inventory {
   data: PIXI.InteractionData | null = null;
   ghost: PIXI.Sprite;
 
+  selected = 0;
+
   constructor() {
     this.stage = new PIXI.Container();
 
@@ -44,6 +46,9 @@ export class Inventory {
   }
 
   mouseDown(event: PIXI.InteractionEvent, id: number) {
+
+    if (!this.slots[id].item) return;
+
     this.dragFrom = id;
     this.dragTo = id;
     this.data = event.data;
