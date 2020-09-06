@@ -4,6 +4,7 @@ import * as _ from "lodash";
 
 import { Slot } from "./Slot";
 import { generateInventory, createBar } from "./InventoryHelper";
+import { Item } from "./Item";
 
 const shift = -200;
 
@@ -73,7 +74,10 @@ export class Inventory {
     back.width = window.innerWidth;
     back.height = window.innerWidth;
     back.interactive = true;
-    back.on("mouseup", () => this.swap(this.dragFrom, -1));
+    back.on("mouseup", () => {
+      this.dragTo = -1;
+      this.mouseUp();
+    });
     this.stage.addChild(back);
 
     generateInventory(this.stage, this);
@@ -89,11 +93,26 @@ export class Inventory {
     this.stage.addChild(this.ghost);
   }
 
-  select(id: number) {
+  // select a slot to make it active
+  // deselect previous slot, as there is only 1 active slot
+  selectSlot(id: number) {
     this.slots[this.selected].inactive();
     if (id < 0) return;
     this.selected = id;
     this.slots[this.selected].active();
+  }
+
+  // add given item into first available inventory slot
+  // does not try to stack items
+  // returns whether addition has succeeded
+  addItem(item: Item): boolean {
+    for (let i = 7; i < 37; i++) {
+      if (!this.slots[i].item) {
+        this.slots[i].item = item;
+        return true;
+      }
+    }
+    return false;
   }
 
   mouseDown(event: PIXI.InteractionEvent, id: number) {
@@ -109,14 +128,14 @@ export class Inventory {
   }
 
   mouseUp() {
-    if (this.slots[this.dragFrom].item) _.sample(this.dropSounds).play();
+    if (this.slots[this.dragFrom]?.item) _.sample(this.dropSounds).play();
 
-    this.swap(this.dragFrom, this.dragTo);
+    this.moveItem(this.dragFrom, this.dragTo);
     this.dragStart = undefined;
     this.ghost.visible = false;
     this.dragTo = -1;
     this.dragFrom = -1;
-    this.select(-1);
+    this.selectSlot(-1);
   }
 
   onDragMove() {
@@ -138,19 +157,56 @@ export class Inventory {
     }
   }
 
-  swap(from: number, to: number) {
+  // moves an item from a given slot to a give slot
+  // handles many special cases
+  moveItem(from: number, to: number) {
+    // I'm not seeing enough movement
     if (from === to) return;
 
+    // this should not happen
+    if (from === -1) return;
+
+    // item is being thrown out
     if (to === -1) {
-      this.slots[this.dragFrom].item?.destory();
-      this.slots[this.dragFrom].item = null;
+      this.slots[from].item?.destory();
+      this.slots[from].item = null;
+      return;
     }
 
-    if (this.dragFrom != -1) {
-      if (this.dragTo != -1) {
-        this.slots[this.dragTo].item = this.slots[this.dragFrom].item!;
-      }
-      this.slots[this.dragFrom].item = null;
+    const fromItem = this.slots[from].item!;
+    const toItem = this.slots[to].item;
+    this.slots[from].item = null;
+
+    // item is being moved to empty slot
+    if (!toItem) {
+      this.slots[to].item = fromItem;
+      return;
     }
+
+    // item is different from the destination or non-stackable, swap normally
+    if (fromItem.name !== toItem.name || toItem.maxStack === 1) {
+      this.slots[from].item = toItem;
+      this.slots[to].item = fromItem;
+      return;
+    }
+
+    // destination item stack is full, keep item where it was
+    if (toItem.count === toItem.maxStack) {
+      this.slots[from].item = fromItem;
+      return;
+    }
+
+    // item merged into destination stack
+    if (toItem.count + fromItem.count <= toItem.maxStack) {
+      toItem.count += fromItem.count;
+      fromItem.destory();
+      return;
+    }
+
+    // full stack created with some leftover,
+    // re-add to inventory at first possible slot
+    fromItem.count -= toItem.maxStack - toItem.count;
+    toItem.count = toItem.maxStack;
+    this.addItem(fromItem);
   }
 }

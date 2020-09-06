@@ -45,11 +45,14 @@ function init() {
   const inv = new Inventory();
   app.stage.addChild(inv.stage);
 
+  inv.slots[9].item = new Item(app.stage, "wood", 950);
   inv.slots[10].item = new Item(app.stage, "explosive.timed", 5);
   inv.slots[11].item = new Item(app.stage, "wood", 100);
-  inv.slots[12].item = new Item(app.stage, "stones", 1000);
+  inv.slots[12].item = new Item(app.stage, "stones", 900);
   inv.slots[13].item = new Item(app.stage, "bandage", 3);
   inv.slots[14].item = new Item(app.stage, "ammo.rifle", 42);
+  inv.slots[15].item = new Item(app.stage, "stones", 300);
+  inv.slots[16].item = new Item(app.stage, "stones", 500);
   inv.slots[26].item = new Item(app.stage, "syringe.medical", 2);
   inv.slots[27].item = new Item(app.stage, "bandage", 2);
   inv.slots[28].item = new Item(app.stage, "knife.bone", 1);
