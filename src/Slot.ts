@@ -4,6 +4,8 @@ import { Item } from "./Item";
 import { Inventory } from "./Inventory";
 import { Tween, remove } from "@tweenjs/tween.js";
 
+const slotPopAmount = 4;
+
 export class Slot {
   id: number;
   sprite: PIXI.Sprite;
@@ -29,20 +31,21 @@ export class Slot {
     // mouse events
     this.sprite.interactive = true;
     this.sprite
+      .on("click", () => inventory.select(this.id))
       .on("mousedown", (e) => inventory.mouseDown(e, this.id))
       .on("mouseup", () => inventory.mouseUp())
       .on("mousemove", () => inventory.onDragMove())
       .on("mouseover", () => {
         inventory.dragTo = this.id;
+        inventory.clickSound.play();
         this.onHover();
-      })
-      .on("click", () => this.active());
+      });
 
     inventory.stage.addChild(this.sprite);
   }
 
   active() {
-    this.sprite.tint = 0x3595dc;
+    this.sprite.tint = 0x5cb7ff;
     this.sprite.alpha = 0.9;
   }
 
@@ -51,10 +54,23 @@ export class Slot {
     this.sprite.alpha = 0.5;
   }
 
+  public set item(v: Item | null) {
+    this._item = v;
+    this.updateItem();
+  }
+
+  public get item(): Item | null {
+    return this._item;
+  }
+
   onHover() {
     if (this.animated) return;
 
     this.animated = true;
+    this.sprite.x -= slotPopAmount;
+    this.sprite.y -= slotPopAmount;
+    this.sprite.width += slotPopAmount * 2;
+    this.sprite.height += slotPopAmount * 2;
 
     const a = new TWEEN.Tween({
       x: this.sprite.x,
@@ -62,33 +78,35 @@ export class Slot {
       width: this.sprite.width,
       height: this.sprite.height,
     })
-      .to({ x: "-4", y: "-4", width: "+8", height: "+8" }, 200)
-      .repeat(1)
-      .yoyo(true)
-      .easing(TWEEN.Easing.Quadratic.In)
+      .to(
+        {
+          x: `+${slotPopAmount}`,
+          y: `+${slotPopAmount}`,
+          width: `-${slotPopAmount * 2}`,
+          height: `-${slotPopAmount * 2}`,
+        },
+        100
+      )
       .onUpdate((obj) => {
         this.sprite.x = obj.x;
         this.sprite.y = obj.y;
         this.sprite.width = obj.width;
         this.sprite.height = obj.height;
+        this.updateItem();
       })
-      .start(TWEEN.now())
+      .easing(TWEEN.Easing.Linear.None)
       .onComplete(() => {
         this.animated = false;
-      });
+      })
+      .start(TWEEN.now());
   }
 
-  public set item(v: Item | null) {
-    this._item = v;
-
+  updateItem() {
     if (this._item) {
       this._item.stage.position.x = this.sprite.x;
       this._item.stage.position.y = this.sprite.y;
       this._item.stage.width = this.sprite.width;
       this._item.stage.height = this.sprite.height;
     }
-  }
-  public get item(): Item | null {
-    return this._item;
   }
 }

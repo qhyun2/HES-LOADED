@@ -1,4 +1,6 @@
 import * as PIXI from "pixi.js";
+import { Howl, Howler } from "howler";
+import * as _ from "lodash";
 
 import { Slot } from "./Slot";
 import { generateInventory, createBar } from "./InventoryHelper";
@@ -11,6 +13,48 @@ export class Inventory {
 
   slotTexture = PIXI.Texture.from(require("./assets/slot.png").default);
   barTexture = PIXI.Texture.from(require("./assets/bar.png").default);
+
+  clickSound = new Howl({
+    src: [require("./assets/inventory_click.wav").default],
+  });
+
+  pickupSounds = [
+    new Howl({
+      src: [require("./assets/ui-pickup-leather-1.wav").default],
+      volume: 0.25,
+    }),
+    new Howl({
+      src: [require("./assets/ui-pickup-leather-2.wav").default],
+      volume: 0.25,
+    }),
+    new Howl({
+      src: [require("./assets/ui-pickup-leather-3.wav").default],
+      volume: 0.25,
+    }),
+    new Howl({
+      src: [require("./assets/ui-pickup-leather-4.wav").default],
+      volume: 0.25,
+    }),
+  ];
+
+  dropSounds = [
+    new Howl({
+      src: [require("./assets/ui-drop-leather-1.wav").default],
+      volume: 0.25,
+    }),
+    new Howl({
+      src: [require("./assets/ui-drop-leather-2.wav").default],
+      volume: 0.25,
+    }),
+    new Howl({
+      src: [require("./assets/ui-drop-leather-3.wav").default],
+      volume: 0.25,
+    }),
+    new Howl({
+      src: [require("./assets/ui-drop-leather-4.wav").default],
+      volume: 0.25,
+    }),
+  ];
 
   // dragging
   dragFrom = -1;
@@ -45,20 +89,34 @@ export class Inventory {
     this.stage.addChild(this.ghost);
   }
 
-  mouseDown(event: PIXI.InteractionEvent, id: number) {
+  select(id: number) {
+    this.slots[this.selected].inactive();
+    if (id < 0) return;
+    this.selected = id;
+    this.slots[this.selected].active();
+  }
 
+  mouseDown(event: PIXI.InteractionEvent, id: number) {
     if (!this.slots[id].item) return;
 
     this.dragFrom = id;
     this.dragTo = id;
     this.data = event.data;
     this.dragStart = new PIXI.Point();
+    _.sample(this.pickupSounds).play();
+
     event.data.getLocalPosition(this.stage, this.dragStart);
   }
 
   mouseUp() {
+    if (this.slots[this.dragFrom].item) _.sample(this.dropSounds).play();
+
     this.swap(this.dragFrom, this.dragTo);
+    this.dragStart = undefined;
     this.ghost.visible = false;
+    this.dragTo = -1;
+    this.dragFrom = -1;
+    this.select(-1);
   }
 
   onDragMove() {
@@ -94,7 +152,5 @@ export class Inventory {
       }
       this.slots[this.dragFrom].item = null;
     }
-    this.dragTo = -1;
-    this.dragFrom = -1;
   }
 }
