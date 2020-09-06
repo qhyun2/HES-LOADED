@@ -31,7 +31,7 @@ export class Slot {
     // mouse events
     this.sprite.interactive = true;
     this.sprite
-      .on("click", () => inventory.select(this.id))
+      .on("click", () => inventory.selectSlot(this.id))
       .on("mousedown", (e) => inventory.mouseDown(e, this.id))
       .on("mouseup", () => inventory.mouseUp())
       .on("mousemove", () => inventory.onDragMove())
