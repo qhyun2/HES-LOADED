@@ -3,7 +3,7 @@ import { Howl, Howler } from "howler";
 import * as _ from "lodash";
 
 import { Slot } from "./Slot";
-import { generateInventory, createBar } from "./InventoryHelper";
+import { generateInventory, isArmorSlot } from "./InventoryHelper";
 import { Item } from "./Item";
 
 const shift = -200;
@@ -13,7 +13,6 @@ export class Inventory {
   slots: Slot[] = [];
 
   slotTexture = PIXI.Texture.from(require("./assets/slot.png").default);
-  barTexture = PIXI.Texture.from(require("./assets/bar.png").default);
 
   clickSound = new Howl({
     src: [require("./assets/inventory_click.wav").default],
@@ -82,10 +81,7 @@ export class Inventory {
 
     generateInventory(this.stage, this);
 
-    // text boxes
-    this.stage.addChild(createBar(250 + shift + 3, this.barTexture));
-    this.stage.addChild(createBar(666 + shift + 3, this.barTexture));
-    this.stage.addChild(createBar(787 + shift + 3, this.barTexture));
+
 
     this.ghost = new PIXI.Sprite();
     this.ghost.alpha = 0.6;
@@ -95,7 +91,10 @@ export class Inventory {
 
   // select a slot to make it active
   // deselect previous slot, as there is only 1 active slot
-  selectSlot(id: number) {
+  click(id: number) {
+
+    console.log(id)
+
     this.slots[this.selected].inactive();
     if (id < 0) return;
     this.selected = id;
@@ -135,10 +134,10 @@ export class Inventory {
     this.ghost.visible = false;
     this.dragTo = -1;
     this.dragFrom = -1;
-    this.selectSlot(-1);
+    this.click(-1);
   }
 
-  onDragMove() {
+  mouseMove() {
     if (this.dragFrom === -1) return;
 
     if (this.dragStart && this.data) {
@@ -175,6 +174,10 @@ export class Inventory {
 
     const fromItem = this.slots[from].item!;
     const toItem = this.slots[to].item;
+
+    // trying to put non armor item in armor slot
+    if (isArmorSlot(to) && !fromItem.wearable) return
+
     this.slots[from].item = null;
 
     // item is being moved to empty slot

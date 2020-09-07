@@ -26,6 +26,8 @@ const lootArmorSize = 78;
 const lootHotbarX = 1252;
 const lootHotbarY = 828 + shift;
 
+const barTexture = PIXI.Texture.from(require("./assets/bar.png").default);
+
 const textHeadingStyle = new PIXI.TextStyle({
   fontFamily: "Roboto Condensed",
   fontWeight: "700",
@@ -109,6 +111,11 @@ export function generateInventory(stage: PIXI.Container, inv: Inventory) {
     inv.slots.push(s);
   }
 
+  // text boxes
+    stage.addChild(createBar(250 + shift + 3, barTexture));
+    stage.addChild(createBar(666 + shift + 3, barTexture));
+    stage.addChild(createBar(787 + shift + 3, barTexture));
+
  // labels
     let t = new PIXI.Text("INVENTORY");
     t.x = 660;
@@ -155,4 +162,8 @@ export function createBar(y: number, texture: PIXI.Texture) {
   box.height = 32;
   box.alpha = 0.6;
   return box;
+}
+
+export function isArmorSlot(id: number) {
+  return (0 <= id && id <= 6) || (37 <= id && id <= 43)
 }
