@@ -5,7 +5,7 @@ import * as WebFont from "webfontloader";
 
 // NOTE: workaround being used for module
 // in tween package.json, change module: dist/tween.esm.js => dist/tween.amd.js
-import * as TWEEN from "@tweenjs/tween.js"
+import * as TWEEN from "@tweenjs/tween.js";
 
 import { Inventory } from "./Inventory";
 import { Item } from "./Item";
@@ -21,9 +21,6 @@ WebFont.load({
     init();
   },
 });
-
-
-
 
 function init() {
   app = new PIXI.Application({
@@ -45,21 +42,28 @@ function init() {
   const inv = new Inventory();
   app.stage.addChild(inv.stage);
 
-  inv.slots[9].item = new Item(app.stage, "wood", 950);
-  inv.slots[10].item = new Item(app.stage, "explosive.timed", 5);
-  inv.slots[11].item = new Item(app.stage, "wood", 100);
-  inv.slots[12].item = new Item(app.stage, "stones", 900);
-  inv.slots[13].item = new Item(app.stage, "bandage", 3);
-  inv.slots[14].item = new Item(app.stage, "ammo.rifle", 42);
-  inv.slots[15].item = new Item(app.stage, "stones", 300);
-  inv.slots[16].item = new Item(app.stage, "stones", 500);
-  inv.slots[26].item = new Item(app.stage, "syringe.medical", 2);
+  inv.slots[70].item = new Item(app.stage, "crossbow");
   inv.slots[27].item = new Item(app.stage, "bandage", 2);
-  inv.slots[28].item = new Item(app.stage, "knife.bone", 1);
-  inv.slots[29].item = new Item(app.stage, "torch", 1);
-  inv.slots[32].item = new Item(app.stage, "rifle.ak", 1);
-  inv.slots[33].item = new Item(app.stage, "rifle.semiauto", 1);
-  inv.slots[70].item = new Item(app.stage, "crossbow", 1);
+  inv.slots[28].item = new Item(app.stage, "knife.bone");
+  inv.slots[29].item = new Item(app.stage, "torch");
+  inv.slots[32].item = new Item(app.stage, "rifle.ak");
+  inv.slots[33].item = new Item(app.stage, "rifle.semiauto");
+
+  inv.addItem(new Item(app.stage, "wood", 950));
+  inv.addItem(new Item(app.stage, "explosive.timed", 5));
+  inv.addItem(new Item(app.stage, "wood", 100));
+  inv.addItem(new Item(app.stage, "stones", 900));
+  inv.addItem(new Item(app.stage, "bandage", 3));
+  inv.addItem(new Item(app.stage, "ammo.rifle", 42));
+  inv.addItem(new Item(app.stage, "syringe.medical"));
+  inv.addItem(new Item(app.stage, "stones", 500));
+  inv.addItem(new Item(app.stage, "stones", 300));
+  inv.addItem(new Item(app.stage, "attire.hide.boots"));
+  inv.addItem(new Item(app.stage, "bbq"));
+  inv.addItem(new Item(app.stage, "hammer"));
+  inv.addItem(new Item(app.stage, "stones", 150));
+  inv.addItem(new Item(app.stage, "attire.hide.boots"));
+  inv.addItem(new Item(app.stage, "hazmatsuit"));
 
   requestAnimationFrame(animate);
 }

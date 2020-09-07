@@ -22,7 +22,7 @@ export class Item {
   conditionEnabled = false;
   condition = 100;
 
-  constructor(stage: PIXI.Container, name: string, amount: number) {
+  constructor(stage: PIXI.Container, name: string, amount = 1) {
     this.name = name;
     this.stage = new PIXI.Container();
     stage.addChild(this.stage);
@@ -69,6 +69,8 @@ export class Item {
           g.endFill();
           this.stage.addChild(g);
         }
+
+        this.count = Math.min(this.maxStack, this.count)
       })
       .catch((err) => {
         console.log(this.name);
