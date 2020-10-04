@@ -42,28 +42,28 @@ function init() {
   const inv = new Inventory();
   app.stage.addChild(inv.stage);
 
-  inv.slots[70].item = new Item(app.stage, "crossbow");
-  inv.slots[27].item = new Item(app.stage, "bandage", 2);
-  inv.slots[28].item = new Item(app.stage, "knife.bone");
-  inv.slots[29].item = new Item(app.stage, "torch");
-  inv.slots[32].item = new Item(app.stage, "rifle.ak");
-  inv.slots[33].item = new Item(app.stage, "rifle.semiauto");
+  inv.slots[70].item = new Item(inv.itemContainer, "crossbow");
+  inv.slots[27].item = new Item(inv.itemContainer, "bandage", 2);
+  inv.slots[28].item = new Item(inv.itemContainer, "knife.bone");
+  inv.slots[29].item = new Item(inv.itemContainer, "torch");
+  inv.slots[32].item = new Item(inv.itemContainer, "rifle.ak");
+  inv.slots[33].item = new Item(inv.itemContainer, "rifle.semiauto");
 
-  inv.addItem(new Item(app.stage, "wood", 950));
-  inv.addItem(new Item(app.stage, "explosive.timed", 5));
-  inv.addItem(new Item(app.stage, "wood", 100));
-  inv.addItem(new Item(app.stage, "stones", 900));
-  inv.addItem(new Item(app.stage, "bandage", 3));
-  inv.addItem(new Item(app.stage, "ammo.rifle", 42));
-  inv.addItem(new Item(app.stage, "syringe.medical"));
-  inv.addItem(new Item(app.stage, "stones", 500));
-  inv.addItem(new Item(app.stage, "stones", 300));
-  inv.addItem(new Item(app.stage, "attire.hide.boots"));
-  inv.addItem(new Item(app.stage, "bbq"));
-  inv.addItem(new Item(app.stage, "hammer"));
-  inv.addItem(new Item(app.stage, "stones", 150));
-  inv.addItem(new Item(app.stage, "attire.hide.boots"));
-  inv.addItem(new Item(app.stage, "hazmatsuit"));
+  inv.addItem(new Item(inv.itemContainer, "wood", 950));
+  inv.addItem(new Item(inv.itemContainer, "explosive.timed", 5));
+  inv.addItem(new Item(inv.itemContainer, "wood", 100));
+  inv.addItem(new Item(inv.itemContainer, "stones", 900));
+  inv.addItem(new Item(inv.itemContainer, "bandage", 3));
+  inv.addItem(new Item(inv.itemContainer, "ammo.rifle", 42));
+  inv.addItem(new Item(inv.itemContainer, "syringe.medical"));
+  inv.addItem(new Item(inv.itemContainer, "stones", 500));
+  inv.addItem(new Item(inv.itemContainer, "stones", 300));
+  inv.addItem(new Item(inv.itemContainer, "attire.hide.boots"));
+  inv.addItem(new Item(inv.itemContainer, "bbq"));
+  inv.addItem(new Item(inv.itemContainer, "hammer"));
+  inv.addItem(new Item(inv.itemContainer, "stones", 150));
+  inv.addItem(new Item(inv.itemContainer, "attire.hide.boots"));
+  inv.addItem(new Item(inv.itemContainer, "hazmatsuit"));
 
   requestAnimationFrame(animate);
 }

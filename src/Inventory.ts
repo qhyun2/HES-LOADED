@@ -9,6 +9,8 @@ import { Item } from "./Item";
 const shift = -200;
 
 export class Inventory {
+  slotContainer: PIXI.Container;
+  itemContainer: PIXI.Container;
   stage: PIXI.Container;
   slots: Slot[] = [];
 
@@ -66,7 +68,17 @@ export class Inventory {
   selected = 0;
 
   constructor() {
+    this.slotContainer = new PIXI.Container();
+    this.itemContainer = new PIXI.Container();
     this.stage = new PIXI.Container();
+
+    this.stage.addChild(this.slotContainer)
+    this.stage.addChild(this.itemContainer)
+
+    this.ghost = new PIXI.Sprite();
+    this.ghost.alpha = 0.6;
+    this.ghost.anchor.set(0.5);
+    this.stage.addChild(this.ghost);
 
     // back panel
     const back = new PIXI.Sprite(PIXI.Texture.EMPTY);
@@ -77,16 +89,9 @@ export class Inventory {
       this.dragTo = -1;
       this.mouseUp();
     });
-    this.stage.addChild(back);
+    this.slotContainer.addChild(back);
 
-    generateInventory(this.stage, this);
-
-
-
-    this.ghost = new PIXI.Sprite();
-    this.ghost.alpha = 0.6;
-    this.ghost.anchor.set(0.5);
-    this.stage.addChild(this.ghost);
+    generateInventory(this.slotContainer, this);
   }
 
   // select a slot to make it active
@@ -123,7 +128,7 @@ export class Inventory {
     this.dragStart = new PIXI.Point();
     _.sample(this.pickupSounds).play();
 
-    event.data.getLocalPosition(this.stage, this.dragStart);
+    event.data.getLocalPosition(this.slotContainer, this.dragStart);
   }
 
   mouseUp() {
@@ -141,7 +146,7 @@ export class Inventory {
     if (this.dragFrom === -1) return;
 
     if (this.dragStart && this.data) {
-      const p = this.data.getLocalPosition(this.stage);
+      const p = this.data.getLocalPosition(this.slotContainer);
       if (40 < (this.dragStart.x - p.x) ** 2 + (this.dragStart.y - p.y) ** 2) {
         this.ghost.visible = true;
         this.ghost.texture = this.slots[this.dragFrom].item!.sprite.texture;
@@ -152,7 +157,7 @@ export class Inventory {
     }
 
     if (this.data) {
-      this.data.getLocalPosition(this.stage, this.ghost.position);
+      this.data.getLocalPosition(this.slotContainer, this.ghost.position);
     }
   }
 

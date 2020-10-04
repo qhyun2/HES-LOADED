@@ -41,7 +41,7 @@ export class Slot {
         this.onHover();
       });
 
-    inventory.stage.addChild(this.sprite);
+    inventory.slotContainer.addChild(this.sprite);
   }
 
   active() {
