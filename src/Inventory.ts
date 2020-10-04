@@ -1,169 +1,220 @@
 import * as PIXI from "pixi.js";
+import { Howl, Howler } from "howler";
+import * as _ from "lodash";
 
 import { Slot } from "./Slot";
+import { generateInventory, isArmorSlot } from "./InventoryHelper";
 import { Item } from "./Item";
 
 const shift = -200;
 
-const armorX = 72;
-const armorY = 832;
-const armorSize = 81;
-
-const mainX = 655;
-const mainY = 573;
-const mainSize = 96;
-
-const hotbarX = 656;
-const hotbarY = 963;
-
-const lootX = 1252;
-const lootY = 291;
-const lootSize = 93;
-
-const lootArmorX = 1258;
-const lootArmorY = 706;
-const lootArmorSize = 78;
-
-const lootHotbarX = 1252;
-const lootHotbarY = 828;
-
 export class Inventory {
+  slotContainer: PIXI.Container;
+  itemContainer: PIXI.Container;
   stage: PIXI.Container;
-  slotTexture = PIXI.Texture.from(require("./assets/slot.png").default);
   slots: Slot[] = [];
 
-  dragFrom = -1;
-  dragTo = -1;
+  slotTexture = PIXI.Texture.from(require("./assets/slot.png").default);
+
+  clickSound = new Howl({
+    src: [require("./assets/inventory_click.wav").default],
+  });
+
+  pickupSounds = [
+    new Howl({
+      src: [require("./assets/ui-pickup-leather-1.wav").default],
+      volume: 0.25,
+    }),
+    new Howl({
+      src: [require("./assets/ui-pickup-leather-2.wav").default],
+      volume: 0.25,
+    }),
+    new Howl({
+      src: [require("./assets/ui-pickup-leather-3.wav").default],
+      volume: 0.25,
+    }),
+    new Howl({
+      src: [require("./assets/ui-pickup-leather-4.wav").default],
+      volume: 0.25,
+    }),
+  ];
+
+  dropSounds = [
+    new Howl({
+      src: [require("./assets/ui-drop-leather-1.wav").default],
+      volume: 0.25,
+    }),
+    new Howl({
+      src: [require("./assets/ui-drop-leather-2.wav").default],
+      volume: 0.25,
+    }),
+    new Howl({
+      src: [require("./assets/ui-drop-leather-3.wav").default],
+      volume: 0.25,
+    }),
+    new Howl({
+      src: [require("./assets/ui-drop-leather-4.wav").default],
+      volume: 0.25,
+    }),
+  ];
 
   // dragging
+  dragFrom = -1;
+  dragTo = -1;
+  dragStart?: PIXI.Point;
   data: PIXI.InteractionData | null = null;
+  ghost: PIXI.Sprite;
+
+  selected = 0;
 
   constructor() {
-    let id = 0;
-
+    this.slotContainer = new PIXI.Container();
+    this.itemContainer = new PIXI.Container();
     this.stage = new PIXI.Container();
+
+    this.stage.addChild(this.slotContainer)
+    this.stage.addChild(this.itemContainer)
+
+    this.ghost = new PIXI.Sprite();
+    this.ghost.alpha = 0.6;
+    this.ghost.anchor.set(0.5);
+    this.stage.addChild(this.ghost);
 
     // back panel
     const back = new PIXI.Sprite(PIXI.Texture.EMPTY);
     back.width = window.innerWidth;
     back.height = window.innerWidth;
     back.interactive = true;
-    back.on("mouseup", () => this.discard());
-    this.stage.addChild(back);
+    back.on("mouseup", () => {
+      this.dragTo = -1;
+      this.mouseUp();
+    });
+    this.slotContainer.addChild(back);
 
-    // armor slots
-    for (let i = 0; i < 7; i++) {
-      const s = new Slot(
-        armorX + armorSize * i,
-        armorY + shift,
-        armorSize,
-        armorSize,
-        id++,
-        this
-      );
-      this.slots.push(s);
-    }
+    generateInventory(this.slotContainer, this);
+  }
 
-    // main inventory
-    for (let y = 0; y < 4; y++) {
-      for (let x = 0; x < 6; x++) {
-        const s = new Slot(
-          mainX + mainSize * x,
-          mainY + shift + mainSize * y,
-          mainSize,
-          mainSize,
-          id++,
-          this
-        );
-        this.slots.push(s);
+  // select a slot to make it active
+  // deselect previous slot, as there is only 1 active slot
+  click(id: number) {
+
+    console.log(id)
+
+    this.slots[this.selected].inactive();
+    if (id < 0) return;
+    this.selected = id;
+    this.slots[this.selected].active();
+  }
+
+  // add given item into first available inventory slot
+  // does not try to stack items
+  // returns whether addition has succeeded
+  addItem(item: Item): boolean {
+    for (let i = 7; i < 37; i++) {
+      if (!this.slots[i].item) {
+        this.slots[i].item = item;
+        return true;
       }
     }
-
-    // hotbar
-    for (let i = 0; i < 6; i++) {
-      const s = new Slot(
-        hotbarX + mainSize * i,
-        hotbarY + shift,
-        mainSize,
-        mainSize,
-        id++,
-        this
-      );
-      this.slots.push(s);
-    }
-
-    // text boxes
-    // graphics.drawRect(1243, 250 + shift, 570, 32);
-    // graphics.drawRect(1243, 666 + shift, 570, 32);
-    // graphics.drawRect(1243, 787 + shift, 570, 32);
-
-    // loot armor slots
-    for (let i = 0; i < 7; i++) {
-      const s = new Slot(
-        lootArmorX + lootArmorSize * i,
-        lootArmorY + shift,
-        lootArmorSize,
-        lootArmorSize,
-        id++,
-        this
-      );
-      this.slots.push(s);
-    }
-
-    // loot main inventory
-    for (let y = 0; y < 4; y++) {
-      for (let x = 0; x < 6; x++) {
-        const s = new Slot(
-          lootX + lootSize * x,
-          lootY + shift + lootSize * y,
-          lootSize,
-          lootSize,
-          id++,
-          this
-        );
-        this.slots.push(s);
-      }
-    }
-
-    // loot hotbar
-    for (let i = 0; i < 6; i++) {
-      const s = new Slot(
-        lootHotbarX + lootSize * i,
-        lootHotbarY + shift,
-        lootSize,
-        lootSize,
-        id++,
-        this
-      );
-      this.slots.push(s);
-    }
+    return false;
   }
 
   mouseDown(event: PIXI.InteractionEvent, id: number) {
+    if (!this.slots[id].item) return;
+
     this.dragFrom = id;
+    this.dragTo = id;
     this.data = event.data;
+    this.dragStart = new PIXI.Point();
+    _.sample(this.pickupSounds).play();
+
+    event.data.getLocalPosition(this.slotContainer, this.dragStart);
   }
 
   mouseUp() {
-    if (this.dragFrom != -1) {
-        if (this.dragTo === -1) {
-            this.slots[this.dragFrom].set();
-        } else {
-            this.slots[this.dragTo].set(this.slots[this.dragFrom].item!);
-        }
-    }
+    if (this.slots[this.dragFrom]?.item) _.sample(this.dropSounds).play();
+
+    this.moveItem(this.dragFrom, this.dragTo);
+    this.dragStart = undefined;
+    this.ghost.visible = false;
+    this.dragTo = -1;
     this.dragFrom = -1;
+    this.click(-1);
   }
 
-  discard() {
-      this.slots[this.dragFrom].set()
-      this.dragFrom = -1;
-  }
+  mouseMove() {
+    if (this.dragFrom === -1) return;
 
-  onDragMove() {
-    if (this.dragFrom != -1 && this.data) {
-      var newPosition = this.data.getLocalPosition(this.stage);
-      this.slots[this.dragFrom].item!.sprite.position.copyFrom(newPosition);
+    if (this.dragStart && this.data) {
+      const p = this.data.getLocalPosition(this.slotContainer);
+      if (40 < (this.dragStart.x - p.x) ** 2 + (this.dragStart.y - p.y) ** 2) {
+        this.ghost.visible = true;
+        this.ghost.texture = this.slots[this.dragFrom].item!.sprite.texture;
+        this.ghost.width = 90;
+        this.ghost.height = 90;
+        this.dragStart = undefined;
+      }
     }
+
+    if (this.data) {
+      this.data.getLocalPosition(this.slotContainer, this.ghost.position);
+    }
+  }
+
+  // moves an item from a given slot to a give slot
+  // handles many special cases
+  moveItem(from: number, to: number) {
+    // I'm not seeing enough movement
+    if (from === to) return;
+
+    // this should not happen
+    if (from === -1) return;
+
+    // item is being thrown out
+    if (to === -1) {
+      this.slots[from].item?.destory();
+      this.slots[from].item = null;
+      return;
+    }
+
+    const fromItem = this.slots[from].item!;
+    const toItem = this.slots[to].item;
+
+    // trying to put non armor item in armor slot
+    if (isArmorSlot(to) && !fromItem.wearable) return
+
+    this.slots[from].item = null;
+
+    // item is being moved to empty slot
+    if (!toItem) {
+      this.slots[to].item = fromItem;
+      return;
+    }
+
+    // item is different from the destination or non-stackable, swap normally
+    if (fromItem.name !== toItem.name || toItem.maxStack === 1) {
+      this.slots[from].item = toItem;
+      this.slots[to].item = fromItem;
+      return;
+    }
+
+    // destination item stack is full, keep item where it was
+    if (toItem.count === toItem.maxStack) {
+      this.slots[from].item = fromItem;
+      return;
+    }
+
+    // item merged into destination stack
+    if (toItem.count + fromItem.count <= toItem.maxStack) {
+      toItem.count += fromItem.count;
+      fromItem.destory();
+      return;
+    }
+
+    // full stack created with some leftover,
+    // re-add to inventory at first possible slot
+    fromItem.count -= toItem.maxStack - toItem.count;
+    toItem.count = toItem.maxStack;
+    this.addItem(fromItem);
   }
 }

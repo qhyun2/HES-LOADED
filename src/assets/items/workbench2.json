@@ -1,0 +1,24 @@
+{
+    "itemid": -41896755,
+    "shortname": "workbench2",
+    "Name": "Work Bench Level 2",
+    "Description": "This allows you to craft items requiring workbench level 2",
+    "Category": "Items",
+    "maxDraggable": 0,
+    "ItemType": "Generic",
+    "AmountType": "Count",
+    "stackable": 1,
+    "quickDespawn": false,
+    "rarity": "Rare",
+    "condition": {
+        "enabled": false,
+        "max": 0.0,
+        "repairable": false
+    },
+    "Parent": 0,
+    "isWearable": false,
+    "isHoldable": true,
+    "isUsable": true,
+    "HasSkins": false,
+    "value": 0
+}
