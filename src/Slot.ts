@@ -13,6 +13,7 @@ export class Slot {
   mask: PIXI.Graphics;
   centerX: number;
   centerY: number;
+  size: number;
   animated = false;
   _item: Item | null = null;
 
@@ -24,6 +25,7 @@ export class Slot {
     inventory: Inventory
   ) {
     this.id = id;
+    this.size = size;
     this.centerX = x + size / 2;
     this.centerY = y + size / 2;
 
@@ -59,23 +61,39 @@ export class Slot {
     this.mask = new PIXI.Graphics();
     this.spinner.mask = this.mask;
 
-    let phase = Math.PI * 0.6;
-    const angleStart = Math.PI / 2;
-    const angle = phase + angleStart;
-    const radius = size / 7;
-    const x1 = Math.cos(angleStart) * radius;
-    const y1 = Math.sin(angleStart) * radius;
-    this.mask.clear();
-    this.mask.beginFill();
-    this.mask.moveTo(this.centerX, this.centerY);
-    this.mask.lineTo(this.centerX + x1, this.centerY + y1);
-    this.mask.arc(this.centerX, this.centerY, radius, angleStart, angle, true);
-    this.mask.lineTo(this.centerX, this.centerY);
-    this.mask.endFill();
     inventory.spinnerContainer.addChild(this.mask);
   }
 
-  rightClick() {}
+  rightClick() {
+
+    new TWEEN.Tween({ phase: Math.PI * 0.01 })
+      .to({ phase: Math.PI * 2 }, 350)
+      .onUpdate((obj) => {
+        const radius = this.size / 6.5;
+        const angleStart = Math.PI / 2;
+        const angle = obj.phase + angleStart;
+        const x1 = Math.cos(angleStart) * radius;
+        const y1 = Math.sin(angleStart) * radius;
+        this.mask.clear();
+        this.mask.beginFill();
+        this.mask.moveTo(this.centerX, this.centerY);
+        this.mask.lineTo(this.centerX + x1, this.centerY + y1);
+        this.mask.arc(
+          this.centerX,
+          this.centerY,
+          radius,
+          angleStart,
+          angle,
+          true
+        );
+        this.mask.lineTo(this.centerX, this.centerY);
+        this.mask.endFill();
+      })
+      .onComplete(() => {
+        console.log("done");
+      })
+      .start(TWEEN.now());
+  }
 
   active() {
     this.sprite.tint = 0x5cb7ff;
@@ -105,7 +123,7 @@ export class Slot {
     this.sprite.width += slotPopAmount * 2;
     this.sprite.height += slotPopAmount * 2;
 
-    const a = new TWEEN.Tween({
+    new TWEEN.Tween({
       x: this.sprite.x,
       y: this.sprite.y,
       width: this.sprite.width,
@@ -127,7 +145,6 @@ export class Slot {
         this.sprite.height = obj.height;
         this.updateItem();
       })
-      .easing(TWEEN.Easing.Linear.None)
       .onComplete(() => {
         this.animated = false;
       })
