@@ -11,6 +11,7 @@ const shift = -200;
 export class Inventory {
   slotContainer: PIXI.Container;
   itemContainer: PIXI.Container;
+  spinnerContainer: PIXI.Container;
   stage: PIXI.Container;
   slots: Slot[] = [];
 
@@ -70,10 +71,12 @@ export class Inventory {
   constructor() {
     this.slotContainer = new PIXI.Container();
     this.itemContainer = new PIXI.Container();
-    this.stage = new PIXI.Container();
+    this.spinnerContainer = new PIXI.Container();
 
-    this.stage.addChild(this.slotContainer)
-    this.stage.addChild(this.itemContainer)
+    this.stage = new PIXI.Container();
+    this.stage.addChild(this.slotContainer);
+    this.stage.addChild(this.itemContainer);
+    this.stage.addChild(this.spinnerContainer);
 
     this.ghost = new PIXI.Sprite();
     this.ghost.alpha = 0.6;
@@ -97,13 +100,18 @@ export class Inventory {
   // select a slot to make it active
   // deselect previous slot, as there is only 1 active slot
   click(id: number) {
-
-    console.log(id)
-
     this.slots[this.selected].inactive();
     if (id < 0) return;
     this.selected = id;
     this.slots[this.selected].active();
+  }
+
+  rightClick(e: MouseEvent) {
+    this.slots.forEach((slot) => {
+      if (slot.sprite.containsPoint(new PIXI.Point(e.x, e.y))) {
+        slot.rightClick();
+      }
+    });
   }
 
   // add given item into first available inventory slot
@@ -181,7 +189,7 @@ export class Inventory {
     const toItem = this.slots[to].item;
 
     // trying to put non armor item in armor slot
-    if (isArmorSlot(to) && !fromItem.wearable) return
+    if (isArmorSlot(to) && !fromItem.wearable) return;
 
     this.slots[from].item = null;
 

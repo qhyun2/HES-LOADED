@@ -27,6 +27,7 @@ function init() {
     antialias: true,
     resolution: devicePixelRatio || 1,
   });
+  PIXI.GRAPHICS_CURVES.minSegments = 25;
   window.addEventListener("resize", resize);
   resize();
   document.body.appendChild(app.view);
@@ -40,6 +41,10 @@ function init() {
   app.stage.addChild(bg);
 
   const inv = new Inventory();
+  app.view.addEventListener("contextmenu", (e) => {
+    inv.rightClick(e);
+    e.preventDefault();
+  });
   app.stage.addChild(inv.stage);
 
   inv.slots[70].item = new Item(inv.itemContainer, "crossbow");

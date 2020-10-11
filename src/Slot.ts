@@ -9,6 +9,10 @@ const slotPopAmount = 4;
 export class Slot {
   id: number;
   sprite: PIXI.Sprite;
+  spinner: PIXI.Sprite;
+  mask: PIXI.Graphics;
+  centerX: number;
+  centerY: number;
   animated = false;
   _item: Item | null = null;
 
@@ -20,6 +24,8 @@ export class Slot {
     inventory: Inventory
   ) {
     this.id = id;
+    this.centerX = x + size / 2;
+    this.centerY = y + size / 2;
 
     this.sprite = new PIXI.Sprite(inventory.slotTexture);
     this.sprite.position.x = x;
@@ -27,7 +33,6 @@ export class Slot {
     this.sprite.width = size;
     this.sprite.height = size;
     this.sprite.alpha = 0.5;
-
     // mouse events
     this.sprite.interactive = true;
     this.sprite
@@ -40,9 +45,37 @@ export class Slot {
         inventory.clickSound.play();
         this.onHover();
       });
-
     inventory.slotContainer.addChild(this.sprite);
+
+    this.spinner = new PIXI.Sprite(PIXI.Texture.WHITE);
+    this.spinner.width = size;
+    this.spinner.height = size;
+    this.spinner.anchor.set(0.5);
+    this.spinner.position.x = this.centerX;
+    this.spinner.position.y = this.centerY;
+    this.spinner.tint = 0x9cce3d;
+    inventory.spinnerContainer.addChild(this.spinner);
+
+    this.mask = new PIXI.Graphics();
+    this.spinner.mask = this.mask;
+
+    let phase = Math.PI * 0.6;
+    const angleStart = Math.PI / 2;
+    const angle = phase + angleStart;
+    const radius = size / 7;
+    const x1 = Math.cos(angleStart) * radius;
+    const y1 = Math.sin(angleStart) * radius;
+    this.mask.clear();
+    this.mask.beginFill();
+    this.mask.moveTo(this.centerX, this.centerY);
+    this.mask.lineTo(this.centerX + x1, this.centerY + y1);
+    this.mask.arc(this.centerX, this.centerY, radius, angleStart, angle, true);
+    this.mask.lineTo(this.centerX, this.centerY);
+    this.mask.endFill();
+    inventory.spinnerContainer.addChild(this.mask);
   }
+
+  rightClick() {}
 
   active() {
     this.sprite.tint = 0x5cb7ff;
