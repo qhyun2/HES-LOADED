@@ -12,23 +12,20 @@ import { Item, loadItemData } from "./Item";
 
 let app: PIXI.Application;
 
-// load fonts
-WebFont.load({
-  google: {
-    families: ["Roboto Condensed:700"],
-  },
-  // start app once fonts are loaded
-  active: (e) => {
-    loadItems();
-  },
-});
+async function init() {
+  // load fonts
+  let loadFonts = new Promise((resolve) => {
+    WebFont.load({
+      google: {
+        families: ["Roboto Condensed:700"],
+      },
+      // resolve promise once font is loaded
+      active: resolve,
+    });
+  });
 
-// load items
-function loadItems() {
-  loadItemData().then(init);
-}
+  await Promise.all([loadFonts, loadItemData()]);
 
-function init() {
   app = new PIXI.Application({
     antialias: true,
     resolution: devicePixelRatio || 1,
@@ -91,3 +88,5 @@ function animate(time: number) {
 
   requestAnimationFrame(animate);
 }
+
+init();

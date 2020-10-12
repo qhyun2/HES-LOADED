@@ -3,13 +3,26 @@ import * as PIXI from "pixi.js";
 let data: any;
 let spritesheet: PIXI.LoaderResource;
 
-export async function loadItemData() {
-  data = await (await fetch("./items/data.json")).json();
-  let loader = new PIXI.Loader();
-  loader.add("./items/items.json");
-  let onLoad = new Promise((resolve) => loader.load(resolve));
-  await onLoad;
-  spritesheet = loader.resources["./items/items.json"];
+export function loadItemData(): Promise<void> {
+  // load item data json
+  let itemData = new Promise(async (resolve) => {
+    data = await (await fetch("./items/data.json")).json();
+    resolve();
+  });
+
+  // load item texture spritesheet
+  let itemTextures = new Promise(async (resolve) => {
+    let loader = new PIXI.Loader();
+    loader.add("./items/items.json");
+    await new Promise((resolve) => loader.load(resolve));
+    spritesheet = loader.resources["./items/items.json"];
+    resolve();
+  });
+
+  // return a promis that resolves once all promises defined above are resolved
+  return new Promise((resolve) =>
+    Promise.all([itemData, itemTextures]).then(() => resolve())
+  );
 }
 
 const baseSize = 90;
