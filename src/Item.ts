@@ -1,9 +1,15 @@
 import * as PIXI from "pixi.js";
 
 let data: any;
+let spritesheet: PIXI.LoaderResource;
 
 export async function loadItemData() {
   data = await (await fetch("./items/data.json")).json();
+  let loader = new PIXI.Loader();
+  loader.add("./items/items.json");
+  let onLoad = new Promise((resolve) => loader.load(resolve));
+  await onLoad;
+  spritesheet = loader.resources["./items/items.json"];
 }
 
 const baseSize = 90;
@@ -40,10 +46,7 @@ export class Item {
     this.stage.addChild(bg);
 
     // item texture
-    // TODO: have a central bank of textures
-    this.sprite = new PIXI.Sprite(
-      PIXI.Texture.from(`./items/${this.name}.png`)
-    );
+    this.sprite = new PIXI.Sprite(spritesheet.textures![`${this.name}.png`]);
     this.sprite.x = 10;
     this.sprite.y = 6;
     this.sprite.width = this.sprite.height = baseSize - 20;
