@@ -65,6 +65,8 @@ export class Slot {
   }
 
   rightClick() {
+    if (!this.item) return;
+
     new TWEEN.Tween({ phase: Math.PI * 0.01 })
       .to({ phase: Math.PI * 2 }, 350)
       .onUpdate((obj) => {

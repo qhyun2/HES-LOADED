@@ -60,6 +60,7 @@ async function init() {
   inv.addItem(new Item(inv.itemContainer, "wood", 950));
   inv.addItem(new Item(inv.itemContainer, "explosive.timed", 5));
   inv.addItem(new Item(inv.itemContainer, "wood", 100));
+  inv.addItem(new Item(inv.itemContainer, "wood", 1000));
   inv.addItem(new Item(inv.itemContainer, "stones", 900));
   inv.addItem(new Item(inv.itemContainer, "bandage", 3));
   inv.addItem(new Item(inv.itemContainer, "ammo.rifle", 42));

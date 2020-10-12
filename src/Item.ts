@@ -40,6 +40,7 @@ export class Item {
   _count = 0;
   countString: PIXI.Text;
   stage: PIXI.Container;
+  container: PIXI.Container;
   sprite: PIXI.Sprite;
   wearable = false;
   maxStack = 0;
@@ -49,6 +50,7 @@ export class Item {
 
   constructor(stage: PIXI.Container, name: string, amount = 1) {
     this.name = name;
+    this.container = stage;
     this.stage = new PIXI.Container();
     stage.addChild(this.stage);
 
@@ -94,6 +96,7 @@ export class Item {
   // getters and setters for item count
   public set count(v: number) {
     this._count = v;
+    this.countString.text = "";
 
     if (v > 1) {
       this.countString.text = `x${this._count.toLocaleString("en")}`;
@@ -102,6 +105,30 @@ export class Item {
 
   public get count(): number {
     return this._count;
+  }
+
+  // try to stack a given item onto this item
+  // return what is left over
+  merge(item: Item): Item | void {
+    if (item.name != this.name) return item;
+
+    let room = this.maxStack - this.count;
+
+    if (!room) return item;
+
+    if (room >= item.count) {
+      this.count += item.count;
+      item.destory();
+      return;
+    } else {
+      this.count = this.maxStack;
+      item.count -= room;
+      return item;
+    }
+  }
+
+  copy(): Item {
+    return new Item(this.container, this.name, this.count);
   }
 
   destory() {
