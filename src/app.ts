@@ -8,19 +8,25 @@ import * as WebFont from "webfontloader";
 import * as TWEEN from "@tweenjs/tween.js";
 
 import { Inventory } from "./Inventory";
-import { Item } from "./Item";
+import { Item, loadItemData } from "./Item";
 
 let app: PIXI.Application;
 
+// load fonts
 WebFont.load({
   google: {
     families: ["Roboto Condensed:700"],
   },
   // start app once fonts are loaded
   active: (e) => {
-    init();
+    loadItems();
   },
 });
+
+// load items
+function loadItems() {
+  loadItemData().then(init);
+}
 
 function init() {
   app = new PIXI.Application({

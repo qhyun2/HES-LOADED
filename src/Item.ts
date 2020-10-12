@@ -1,5 +1,11 @@
 import * as PIXI from "pixi.js";
 
+let data: any;
+
+export async function loadItemData() {
+  data = await (await fetch("./items/data.json")).json();
+}
+
 const baseSize = 90;
 
 const textCountStyle = new PIXI.TextStyle({
@@ -53,29 +59,20 @@ export class Item {
     this.count = amount;
 
     // json data
-    fetch(`./items/${this.name}.json`)
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        this.wearable = data.isWearable;
-        this.maxStack = data.stackable;
-        this.conditionEnabled = data.condition.enabled;
-        this.value = data.value;
-        if (this.conditionEnabled) {
-          const g = new PIXI.Graphics();
-          g.beginFill(0xadcb75);
-          g.drawRect(3, 3, 6, 84);
-          g.endFill();
-          this.stage.addChild(g);
-        }
+    const itemData = data[this.name];
+    this.wearable = itemData.isWearable;
+    this.maxStack = itemData.stackable;
+    this.conditionEnabled = itemData.condition.enabled;
+    this.value = itemData.value;
+    if (this.conditionEnabled) {
+      const g = new PIXI.Graphics();
+      g.beginFill(0xadcb75);
+      g.drawRect(3, 3, 6, 84);
+      g.endFill();
+      this.stage.addChild(g);
+    }
 
-        this.count = Math.min(this.maxStack, this.count)
-      })
-      .catch((err) => {
-        console.log(this.name);
-        console.log(err);
-      });
+    this.count = Math.min(this.maxStack, this.count);
   }
 
   // getters and setters for item count
