@@ -5,6 +5,7 @@ import * as _ from "lodash";
 import { Slot } from "./Slot";
 import { generateInventory, isArmorSlot } from "./InventoryHelper";
 import { Item } from "./Item";
+import { playDropSound, playPickupSound } from "./Sound";
 
 const shift = -200;
 
@@ -16,48 +17,6 @@ export class Inventory {
   slots: Slot[] = [];
 
   slotTexture = PIXI.Texture.from(require("./assets/slot.png").default);
-
-  clickSound = new Howl({
-    src: [require("./assets/inventory_click.wav").default],
-  });
-
-  pickupSounds = [
-    new Howl({
-      src: [require("./assets/ui-pickup-leather-1.wav").default],
-      volume: 0.25,
-    }),
-    new Howl({
-      src: [require("./assets/ui-pickup-leather-2.wav").default],
-      volume: 0.25,
-    }),
-    new Howl({
-      src: [require("./assets/ui-pickup-leather-3.wav").default],
-      volume: 0.25,
-    }),
-    new Howl({
-      src: [require("./assets/ui-pickup-leather-4.wav").default],
-      volume: 0.25,
-    }),
-  ];
-
-  dropSounds = [
-    new Howl({
-      src: [require("./assets/ui-drop-leather-1.wav").default],
-      volume: 0.25,
-    }),
-    new Howl({
-      src: [require("./assets/ui-drop-leather-2.wav").default],
-      volume: 0.25,
-    }),
-    new Howl({
-      src: [require("./assets/ui-drop-leather-3.wav").default],
-      volume: 0.25,
-    }),
-    new Howl({
-      src: [require("./assets/ui-drop-leather-4.wav").default],
-      volume: 0.25,
-    }),
-  ];
 
   // dragging
   dragFrom = -1;
@@ -123,12 +82,12 @@ export class Inventory {
     this.dragTo = id;
     this.data = event.data;
     this.dragStart = new PIXI.Point();
-    _.sample(this.pickupSounds).play();
+    playPickupSound();
   }
 
   mouseUp() {
     const itemMoved = this.moveItem(this.dragFrom, this.dragTo);
-    if (itemMoved) _.sample(this.dropSounds).play();
+    if (itemMoved) playDropSound();
     this.dragStart = undefined;
     this.ghost.visible = false;
     this.dragTo = -1;

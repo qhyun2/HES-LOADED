@@ -9,6 +9,7 @@ import * as TWEEN from "@tweenjs/tween.js";
 
 import { Inventory } from "./Inventory";
 import { Item, loadItemData } from "./Item";
+import { loadSounds } from "./Sound";
 
 let app: PIXI.Application;
 
@@ -24,7 +25,7 @@ async function init() {
     });
   });
 
-  await Promise.all([loadFonts, loadItemData()]);
+  await Promise.all([loadFonts, loadItemData(), loadSounds()]);
 
   app = new PIXI.Application({
     antialias: true,

@@ -3,6 +3,7 @@ import * as TWEEN from "@tweenjs/tween.js";
 import { Item } from "./Item";
 import { Inventory } from "./Inventory";
 import { Tween, remove } from "@tweenjs/tween.js";
+import { playClickSound } from "./Sound";
 
 const slotPopAmount = 4;
 
@@ -44,7 +45,7 @@ export class Slot {
       .on("mousemove", () => inventory.mouseMove())
       .on("mouseover", () => {
         inventory.dragTo = this.id;
-        inventory.clickSound.play();
+        playClickSound();
         this.onHover();
       });
     inventory.slotContainer.addChild(this.sprite);
