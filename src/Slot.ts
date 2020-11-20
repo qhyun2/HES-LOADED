@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 import * as TWEEN from "@tweenjs/tween.js";
 import { Item } from "./Item";
 import { Inventory } from "./Inventory";
+import { Type, slotType } from "./InventoryHelper";
 import { Tween, remove } from "@tweenjs/tween.js";
 import { playClickSound } from "./Sound";
 
@@ -9,6 +10,8 @@ const slotPopAmount = 4;
 
 export class Slot {
   id: number;
+  type: Type;
+  inventory: Inventory;
   sprite: PIXI.Sprite;
   spinner: PIXI.Sprite;
   mask: PIXI.Graphics;
@@ -27,6 +30,8 @@ export class Slot {
   ) {
     this.id = id;
     this.size = size;
+    this.type = slotType(id);
+    this.inventory = inventory;
     this.centerX = x + size / 2;
     this.centerY = y + size / 2;
 
@@ -92,7 +97,13 @@ export class Slot {
         this.mask.endFill();
       })
       .onComplete(() => {
-        console.log("done");
+        const temp = this.item!;
+        this.clearItem();
+        if (this.type == Type.MainInv || this.type == Type.Hotbar) {
+          this.inventory.moveItemLocation(temp, Type.Loot);
+        } else if (this.type == Type.Loot) {
+          this.inventory.moveItemLocation(temp, Type.MainInv);
+        }
       })
       .start(TWEEN.now());
   }
@@ -114,6 +125,10 @@ export class Slot {
 
   public get item(): Item | null {
     return this._item;
+  }
+
+  clearItem(): void {
+    this._item = null;
   }
 
   onHover() {

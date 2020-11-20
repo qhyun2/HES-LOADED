@@ -112,46 +112,45 @@ export function generateInventory(stage: PIXI.Container, inv: Inventory) {
   }
 
   // text boxes
-    stage.addChild(createBar(250 + shift + 3, barTexture));
-    stage.addChild(createBar(666 + shift + 3, barTexture));
-    stage.addChild(createBar(787 + shift + 3, barTexture));
+  stage.addChild(createBar(250 + shift + 3, barTexture));
+  stage.addChild(createBar(666 + shift + 3, barTexture));
+  stage.addChild(createBar(787 + shift + 3, barTexture));
 
- // labels
-    let t = new PIXI.Text("INVENTORY");
-    t.x = 660;
-    t.y = 378;
-    t.anchor.set(0, 1);
-    t.style = textHeadingStyle;
-    stage.addChild(t);
+  // labels
+  let t = new PIXI.Text("INVENTORY");
+  t.x = 660;
+  t.y = 378;
+  t.anchor.set(0, 1);
+  t.style = textHeadingStyle;
+  stage.addChild(t);
 
-    t = new PIXI.Text("LOOT");
-    t.x = 1243;
-    t.y = 52;
-    t.anchor.set(0, 1);
-    t.style = textHeadingStyle;
-    stage.addChild(t);
+  t = new PIXI.Text("LOOT");
+  t.x = 1243;
+  t.y = 52;
+  t.anchor.set(0, 1);
+  t.style = textHeadingStyle;
+  stage.addChild(t);
 
-    t = new PIXI.Text("PlayerName");
-    t.x = 1243 + 15;
-    t.y = 52 + 5;
-    t.anchor.set(0, 0);
-    t.style = textBarStyle;
-    stage.addChild(t);
+  t = new PIXI.Text("PlayerName");
+  t.x = 1243 + 15;
+  t.y = 52 + 5;
+  t.anchor.set(0, 0);
+  t.style = textBarStyle;
+  stage.addChild(t);
 
-    t = new PIXI.Text("Clothing");
-    t.x = 1243 + 15;
-    t.y = 469 + 5;
-    t.anchor.set(0, 0);
-    t.style = textBarStyle;
-    stage.addChild(t);
+  t = new PIXI.Text("Clothing");
+  t.x = 1243 + 15;
+  t.y = 469 + 5;
+  t.anchor.set(0, 0);
+  t.style = textBarStyle;
+  stage.addChild(t);
 
-    t = new PIXI.Text("Belt");
-    t.x = 1243 + 15;
-    t.y = 590 + 5;
-    t.anchor.set(0, 0);
-    t.style = textBarStyle;
-    stage.addChild(t);
-
+  t = new PIXI.Text("Belt");
+  t.x = 1243 + 15;
+  t.y = 590 + 5;
+  t.anchor.set(0, 0);
+  t.style = textBarStyle;
+  stage.addChild(t);
 }
 
 export function createBar(y: number, texture: PIXI.Texture) {
@@ -165,5 +164,34 @@ export function createBar(y: number, texture: PIXI.Texture) {
 }
 
 export function isArmorSlot(id: number) {
-  return (0 <= id && id <= 6) || (37 <= id && id <= 43)
+  return (0 <= id && id <= 6) || (37 <= id && id <= 43);
+}
+
+export enum InventorySlots {
+  ArmourStart = 0,
+  ArmourEnd = 6,
+  MainStart = 7,
+  MainEnd = 30,
+  HotbarStart = 31,
+  HotBarEnd = 36,
+  LootArmourStart = 37,
+  LootArmourEnd = 43,
+  LootStart = 44,
+  LootEnd = 67,
+  LootHotbarStart = 68,
+  LootHotbarEnd = 73,
+}
+
+export enum Type {
+  Armour,
+  MainInv,
+  Hotbar,
+  Loot,
+}
+
+export function slotType(id: number): Type {
+  if (id <= 6) return Type.Armour;
+  if (id <= 30) return Type.MainInv;
+  if (id <= 36) return Type.Hotbar;
+  return Type.Loot;
 }

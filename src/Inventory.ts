@@ -3,7 +3,7 @@ import { Howl, Howler } from "howler";
 import * as _ from "lodash";
 
 import { Slot } from "./Slot";
-import { generateInventory, isArmorSlot } from "./InventoryHelper";
+import { generateInventory, isArmorSlot, Type } from "./InventoryHelper";
 import { Item } from "./Item";
 import { playDropSound, playPickupSound } from "./Sound";
 
@@ -127,7 +127,7 @@ export class Inventory {
     // item is being thrown out
     if (to === -1) {
       this.slots[from].item?.destory();
-      this.slots[from].item = null;
+      this.slots[from].clearItem();
       return true;
     }
 
@@ -137,7 +137,7 @@ export class Inventory {
     // trying to put non armor item in armor slot
     if (isArmorSlot(to) && !fromItem.wearable) return false;
 
-    this.slots[from].item = null;
+    this.slots[from].clearItem();
 
     // item is being moved to empty slot
     if (!toItem) {
@@ -190,6 +190,8 @@ export class Inventory {
   addItem(item: Item | void, self = true, stack = false): Item | void {
     if (!item) return;
 
+    console.log(item);
+
     var start, end: number;
 
     if (self) {
@@ -203,7 +205,18 @@ export class Inventory {
     }
 
     for (let i = start; i < end; i++) {
-      if (!this.slots[i].item) {
+      if (this.slots[i].item) {
+        if (
+          stack &&
+          this.slots[i].item!.name == item.name &&
+          this.slots[i].item!.canAccept()
+        ) {
+          // recusively add items
+          this.addItem(this.slots[i].item!.merge(item), self, stack);
+          return;
+        }
+      } else {
+        var j = 1;
         this.slots[i].item = item;
         return;
       }
@@ -219,5 +232,13 @@ export class Inventory {
   }
   addItemLootStack(item: Item): Item | void {
     return this.addItem(item, false, true);
+  }
+
+  moveItemLocation(item: Item, location: Type) {
+    if (location == Type.Loot) {
+      this.addItemLootStack(item);
+    } else if (location == Type.MainInv) {
+      this.addItemSelfStack(item);
+    }
   }
 }

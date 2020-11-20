@@ -8,7 +8,7 @@ import * as WebFont from "webfontloader";
 import * as TWEEN from "@tweenjs/tween.js";
 
 import { Inventory } from "./Inventory";
-import { Item, loadItemData } from "./Item";
+import { Item, loadItems } from "./Item";
 import { loadSounds } from "./Sound";
 
 let app: PIXI.Application;
@@ -25,7 +25,7 @@ async function init() {
     });
   });
 
-  await Promise.all([loadFonts, loadItemData(), loadSounds()]);
+  await Promise.all([loadFonts, loadItems(), loadSounds()]);
 
   app = new PIXI.Application({
     antialias: true,

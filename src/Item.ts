@@ -3,7 +3,7 @@ import * as PIXI from "pixi.js";
 let data: any;
 let spritesheet: PIXI.LoaderResource;
 
-export function loadItemData(): Promise<void> {
+export function loadItems(): Promise<void> {
   // load item data json
   let itemData = new Promise(async (resolve) => {
     data = await (await fetch("./items/data.json")).json();
@@ -107,6 +107,10 @@ export class Item {
     return this._count;
   }
 
+  canAccept(): boolean {
+    return this.count < this.maxStack;
+  }
+
   // try to stack a given item onto this item
   // return what is left over
   merge(item: Item): Item | void {
@@ -119,7 +123,7 @@ export class Item {
     if (room >= item.count) {
       this.count += item.count;
       item.destory();
-      return;
+      return undefined;
     } else {
       this.count = this.maxStack;
       item.count -= room;
