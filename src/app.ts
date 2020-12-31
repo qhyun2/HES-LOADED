@@ -9,6 +9,7 @@ import * as KEYBOARD from "pixi.js-keyboard";
 import * as TWEEN from "@tweenjs/tween.js";
 
 import { Inventory } from "./Inventory";
+import { GUI } from "./GUI";
 import { Item, loadItems } from "./Item";
 import { loadSounds } from "./Sound";
 
@@ -49,6 +50,9 @@ async function init() {
     e.preventDefault();
   });
   app.stage.addChild(inv.stage);
+
+  const gui = new GUI();
+  app.stage.addChild(gui.stage);
 
   inv.slots[70].item = new Item(inv.itemContainer, "crossbow");
   inv.slots[27].item = new Item(inv.itemContainer, "bandage", 2);
