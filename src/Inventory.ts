@@ -189,9 +189,6 @@ export class Inventory {
   // return what is left over
   addItem(item: Item | void, self = true, stack = false): Item | void {
     if (!item) return;
-
-    console.log(item);
-
     var start, end: number;
 
     if (self) {
@@ -206,11 +203,7 @@ export class Inventory {
 
     for (let i = start; i < end; i++) {
       if (this.slots[i].item) {
-        if (
-          stack &&
-          this.slots[i].item!.name == item.name &&
-          this.slots[i].item!.canAccept()
-        ) {
+        if (stack && this.slots[i].item!.name == item.name && this.slots[i].item!.canAccept()) {
           // recusively add items
           this.addItem(this.slots[i].item!.merge(item), self, stack);
           return;

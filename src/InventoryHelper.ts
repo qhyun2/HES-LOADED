@@ -56,13 +56,7 @@ export function generateInventory(stage: PIXI.Container, inv: Inventory) {
   // main inventory
   for (let y = 0; y < 4; y++) {
     for (let x = 0; x < 6; x++) {
-      const s = new Slot(
-        mainX + mainSize * x,
-        mainY + mainSize * y,
-        mainSize,
-        id++,
-        inv
-      );
+      const s = new Slot(mainX + mainSize * x, mainY + mainSize * y, mainSize, id++, inv);
       inv.slots.push(s);
     }
   }
@@ -75,39 +69,21 @@ export function generateInventory(stage: PIXI.Container, inv: Inventory) {
 
   // loot armor slots
   for (let i = 0; i < 7; i++) {
-    const s = new Slot(
-      lootArmorX + lootArmorSize * i,
-      lootArmorY,
-      lootArmorSize,
-      id++,
-      inv
-    );
+    const s = new Slot(lootArmorX + lootArmorSize * i, lootArmorY, lootArmorSize, id++, inv);
     inv.slots.push(s);
   }
 
   // loot main inventory
   for (let y = 0; y < 4; y++) {
     for (let x = 0; x < 6; x++) {
-      const s = new Slot(
-        lootX + lootSize * x,
-        lootY + lootSize * y,
-        lootSize,
-        id++,
-        inv
-      );
+      const s = new Slot(lootX + lootSize * x, lootY + lootSize * y, lootSize, id++, inv);
       inv.slots.push(s);
     }
   }
 
   // loot hotbar
   for (let i = 0; i < 6; i++) {
-    const s = new Slot(
-      lootHotbarX + lootSize * i,
-      lootHotbarY,
-      lootSize,
-      id++,
-      inv
-    );
+    const s = new Slot(lootHotbarX + lootSize * i, lootHotbarY, lootSize, id++, inv);
     inv.slots.push(s);
   }
 

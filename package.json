@@ -39,6 +39,7 @@
     "howler": "^2.2.0",
     "lodash": "^4.17.20",
     "pixi.js": "^5.3.3",
+    "pixi.js-keyboard": "^1.0.9",
     "webfontloader": "^1.6.28"
   }
 }

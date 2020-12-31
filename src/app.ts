@@ -2,6 +2,7 @@ import "./style.css";
 
 import * as PIXI from "pixi.js";
 import * as WebFont from "webfontloader";
+import * as KEYBOARD from "pixi.js-keyboard";
 
 // NOTE: workaround being used for module
 // in tween package.json, change module: dist/tween.esm.js => dist/tween.amd.js
@@ -36,9 +37,7 @@ async function init() {
   resize();
   document.body.appendChild(app.view);
 
-  const bg = new PIXI.Sprite(
-    PIXI.Texture.from(require("./assets/bg.jpg").default)
-  );
+  const bg = new PIXI.Sprite(PIXI.Texture.from(require("./assets/bg.jpg").default));
   bg.filters = [new PIXI.filters.BlurFilter(5)];
   bg.width = 1920;
   bg.height = 1080;
@@ -84,6 +83,7 @@ function resize() {
 
 function animate(time: number) {
   TWEEN.update(time);
+  KEYBOARD.update();
 
   // render the stage
   app.renderer.render(app.stage);

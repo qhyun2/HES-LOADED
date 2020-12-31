@@ -1,10 +1,12 @@
 import * as PIXI from "pixi.js";
 import * as TWEEN from "@tweenjs/tween.js";
+import * as KEYBOARD from "pixi.js-keyboard";
+
 import { Item } from "./Item";
 import { Inventory } from "./Inventory";
 import { Type, slotType } from "./InventoryHelper";
-import { Tween, remove } from "@tweenjs/tween.js";
 import { playClickSound } from "./Sound";
+import { Tween } from "@tweenjs/tween.js";
 
 const slotPopAmount = 4;
 
@@ -20,14 +22,9 @@ export class Slot {
   size: number;
   animated = false;
   _item: Item | null = null;
+  spinnerAnimation: typeof Tween.prototype | null = null;
 
-  constructor(
-    x: number,
-    y: number,
-    size: number,
-    id: number,
-    inventory: Inventory
-  ) {
+  constructor(x: number, y: number, size: number, id: number, inventory: Inventory) {
     this.id = id;
     this.size = size;
     this.type = slotType(id);
@@ -48,10 +45,13 @@ export class Slot {
       .on("mousedown", (e) => inventory.mouseDown(e, this.id))
       .on("mouseup", () => inventory.mouseUp())
       .on("mousemove", () => inventory.mouseMove())
-      .on("mouseover", () => {
+      .on("mouseover", (e: PIXI.InteractionEvent) => {
         inventory.dragTo = this.id;
         playClickSound();
         this.onHover();
+        if (KEYBOARD.isKeyDown("KeyH")) {
+          this.rightClick();
+        }
       });
     inventory.slotContainer.addChild(this.sprite);
 
@@ -72,8 +72,9 @@ export class Slot {
 
   rightClick() {
     if (!this.item) return;
+    if (this.spinnerAnimation) this.spinnerAnimation.stop();
 
-    new TWEEN.Tween({ phase: Math.PI * 0.01 })
+    this.spinnerAnimation = new TWEEN.Tween({ phase: Math.PI * 0.01 })
       .to({ phase: Math.PI * 2 }, 350)
       .onUpdate((obj) => {
         const radius = this.size / 6.5;
@@ -85,14 +86,7 @@ export class Slot {
         this.mask.beginFill();
         this.mask.moveTo(this.centerX, this.centerY);
         this.mask.lineTo(this.centerX + x1, this.centerY + y1);
-        this.mask.arc(
-          this.centerX,
-          this.centerY,
-          radius,
-          angleStart,
-          angle,
-          true
-        );
+        this.mask.arc(this.centerX, this.centerY, radius, angleStart, angle, true);
         this.mask.lineTo(this.centerX, this.centerY);
         this.mask.endFill();
       })

@@ -20,9 +20,7 @@ export function loadItems(): Promise<void> {
   });
 
   // return a promis that resolves once all promises defined above are resolved
-  return new Promise((resolve) =>
-    Promise.all([itemData, itemTextures]).then(() => resolve())
-  );
+  return new Promise((resolve) => Promise.all([itemData, itemTextures]).then(() => resolve()));
 }
 
 const baseSize = 90;
