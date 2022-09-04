@@ -5,16 +5,16 @@ let spritesheet: PIXI.LoaderResource;
 
 export function loadItems(): Promise<void> {
   // load item data json
-  let itemData = new Promise(async (resolve) => {
+  let itemData = new Promise<void>(async (resolve) => {
     data = await (await fetch("./items/data.json")).json();
     resolve();
   });
 
   // load item texture spritesheet
-  let itemTextures = new Promise(async (resolve) => {
+  let itemTextures = new Promise<void>(async (resolve) => {
     let loader = new PIXI.Loader();
     loader.add("./items/items.json");
-    await new Promise((resolve) => loader.load(resolve));
+    await new Promise<void>((resolve) => loader.load(() => resolve()));
     spritesheet = loader.resources["./items/items.json"];
     resolve();
   });

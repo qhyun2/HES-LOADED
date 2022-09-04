@@ -1,5 +1,4 @@
-import { Howl, Howler } from "howler";
-import { resolve } from "../webpack.config";
+import { Howl } from "howler";
 import * as _ from "lodash";
 
 let clickSound: Howl;
@@ -48,11 +47,11 @@ export function loadSounds(): Promise<void> {
 }
 
 export function playPickupSound() {
-  _.sample(pickupSounds).play();
+  _.sample(pickupSounds)!.play();
 }
 
 export function playDropSound() {
-  _.sample(dropSounds).play();
+  _.sample(dropSounds)!.play();
 }
 
 export function playClickSound() {

@@ -8,8 +8,9 @@ import * as KEYBOARD from "pixi.js-keyboard";
 // in tween package.json, change module: dist/tween.esm.js => dist/tween.amd.js
 import * as TWEEN from "@tweenjs/tween.js";
 
+import { loadLootTables, generateLoot } from "./LootGeneration";
 import { Inventory } from "./Inventory";
-import { GUI } from "./GUI";
+import { Button } from "./GUI";
 import { Item, loadItems } from "./Item";
 import { loadSounds } from "./Sound";
 
@@ -27,7 +28,7 @@ async function init() {
     });
   });
 
-  await Promise.all([loadFonts, loadItems(), loadSounds()]);
+  await Promise.all([loadFonts, loadItems(), loadSounds(), loadLootTables()]);
 
   app = new PIXI.Application({
     antialias: true,
@@ -51,8 +52,9 @@ async function init() {
   });
   app.stage.addChild(inv.stage);
 
-  const gui = new GUI();
-  app.stage.addChild(gui.stage);
+  const button = new Button("NEW LOOT", 1095, 340, 260, 40);
+  button.onClick = () => generateLoot(inv);
+  app.stage.addChild(button.stage);
 
   inv.slots[70].item = new Item(inv.itemContainer, "crossbow");
   inv.slots[27].item = new Item(inv.itemContainer, "bandage", 2);

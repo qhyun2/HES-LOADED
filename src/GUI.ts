@@ -8,18 +8,6 @@ const textButtonStyle = new PIXI.TextStyle({
   letterSpacing: 0.9,
 });
 
-export class GUI {
-  stage = new PIXI.Container();
-
-  constructor() {
-    const button = new Button("NEW LOOT", 1095, 340, 260, 40);
-    this.stage.addChild(button.stage);
-    button.onClick = () => {
-      console.log("yo");
-    };
-  }
-}
-
 const BUTTON_NOISE = new PIXI.filters.NoiseFilter(0.02);
 const BUTTON_DEFAULT = 0x3e5728;
 const BUTTON_HIGHLIGHT = 0x3e6428;
